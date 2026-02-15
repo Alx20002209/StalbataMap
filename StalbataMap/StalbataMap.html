@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="bg">
+<head>
+<meta charset="UTF-8">
+<title>Cultural Map of Bulgaria</title>
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
+<link rel="stylesheet" href="https://unpkg.com/leaflet.markercluster@1.5.3/dist/MarkerCluster.css">
+<link rel="stylesheet" href="https://unpkg.com/leaflet.markercluster@1.5.3/dist/MarkerCluster.Default.css">
+
+<style>
+html, body {
+    margin: 0;
+    padding: 0;
+    height: 100%;
+}
+
+#map {
+    width: 100%;
+    height: 100vh;
+}
+#title{
+  margin: 50;
+  padding: 50;
+  line-height: 50;
+  display: inline;
+  white-space: nowrap;
+  font-size: 24px;
+  font-family: Arial, sans-serif;
+}
+</style>
+</head>
+
+<body>
+<div id="map"></div>
+
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+<script src="https://unpkg.com/leaflet.markercluster@1.5.3/dist/leaflet.markercluster.js"></script>
+
+<script>
+/*
+  Hardcoded dataset (CSV → JS object form)
+  You can edit coordinates, names, descriptions freely
+*/
+const locations = [
+  // SOFIA
+  { image:"http://127.0.0.1:5500/StalbataMap/locationImages/reading.jpg",name:"Читалнята", lat:42.694941, lng:23.324704, city:"Sofia", description:"Independent reading room and cultural meeting place focused on books and discussions." },
+  { image:"http://127.0.0.1:5500/StalbataMap/locationImages/Mahala Bookstore.jpg",name:"Mahala Bookstore", lat:42.700441, lng:23.328373, city:"Sofia", description:"Independent bookstore emphasizing small publishers and alternative culture." },
+  { image:"http://127.0.0.1:5500/StalbataMap/locationImages/Nissim Bookstore.jpg",name:"Nissim Bookstore", lat:42.689082, lng:23.329885, city:"Sofia", description:"Curated bookstore focused on literature, philosophy and social sciences." },
+  { image:"http://127.0.0.1:5500/StalbataMap/locationImages/FOX Book Café.jpg",name:"FOX Book Café", lat:42.691617, lng:23.319049, city:"Sofia", description:"Bookstore café combining books, coffee, wine and cultural events." },
+  { image:'',name:"Дюкян Меломан", lat:42.693793, lng:23.329807, city:"Sofia", description:"Legendary record shop for vinyl, CDs and audio equipment." },
+  { image:'',name:"matzalo", lat:42.690633, lng:23.320758, city:"Sofia", description:"Creative studio and shop focused on illustration, zines and art objects." },
+  { image:"http://127.0.0.1:5500/StalbataMap/locationImages/WineMusic.jpg",name:"Вино и Музика", lat:42.689430, lng:23.311891, city:"Sofia", description:"Wine bar and cultural venue combining music, tastings and events." },
+  { image:"http://127.0.0.1:5500/StalbataMap/locationImages/Art Bazar.jpg",name:"Листопаден арт базар", lat:42.691854, lng:23.324128, city:"Sofia", description:"Seasonal art bazaar promoting local artists and independent creators." },
+  { image:"http://127.0.0.1:5500/StalbataMap/locationImages/Sunflower.jpg",name:"Слънчоглед", lat:42.695438, lng:23.341800, city:"Sofia", description:"Cultural café and alternative meeting place." },
+  { image:"http://127.0.0.1:5500/StalbataMap/locationImages/Vivent.jpg",name:"Vivent", lat:42.670969, lng:23.363248, city:"Sofia", description:"Creative and social space for urban culture initiatives." },
+  { image:"http://127.0.0.1:5500/StalbataMap/locationImages/CultureCentre.jpg",name:"Културен център G8", lat:42.692200, lng:23.315560, city:"Sofia", description:"Independent cinema and cultural center." },
+  { image:"http://127.0.0.1:5500/StalbataMap/locationImages/Danaya.jpg",name:"Фондация Даная", lat:42.640087, lng:23.365942, city:"Sofia", description:"Foundation working in culture, education and social engagement." },
+  { image:"http://127.0.0.1:5500/StalbataMap/locationImages/hali.jpg",name:"Централни хали", lat: 42.700388, lng:23.322378, city:"Sofia", description:"Historic central market hall and urban landmark." },
+  { image:"http://127.0.0.1:5500/StalbataMap/locationImages/HERITAGE.jpg",name:"Галерия HERITAGE", lat:42.699496, lng:23.329477, city:"Sofia", description:"Gallery showcasing contemporary and heritage-inspired art." },
+  { image:"http://127.0.0.1:5500/StalbataMap/locationImages/Vineria Wine Bar&Shop.jpg",name:"Vineria Wine Bar&Shop", lat:42.693515, lng:23.319313, city:"Sofia", description:"Wine bar and shop offering curated selections and tastings." },
+  { image:"http://127.0.0.1:5500/StalbataMap/locationImages/Kolichka Bar.jpg",name:"Kolichka Bar", lat:42.695384, lng:23.339993, city:"Sofia", description:"Bar and community cultural space." },
+  { image:"http://127.0.0.1:5500/StalbataMap/locationImages/Toplo.jpg",name:"Топлоцентрала", lat:42.679768, lng:23.315192, city:"Sofia", description:"Contemporary art and culture center in a former heating plant." },
+  { image:"http://127.0.0.1:5500/StalbataMap/locationImages/Brave creation.JPG",name:"Brave creation", lat:42.691206, lng:23.323977, city:"Sofia", description:"Creative studio supporting independent designers." },
+  { image:"http://127.0.0.1:5500/StalbataMap/locationImages/Punto art bazaar.jpg",name:"Punto art bazaar", lat:42.690382, lng:23.329048, city:"Sofia", description:"Art bazaar and creative market space." },
+  { image:"http://127.0.0.1:5500/StalbataMap/locationImages/Cake Lab.jpg",name:"Cake Lab", lat:42.693395, lng:23.319438, city:"Sofia", description:"Artisan dessert shop combining pastry and design." },
+  { image:"http://127.0.0.1:5500/StalbataMap/locationImages/Tandir Bakehouse.jpg",name:"Tandir Bakehouse", lat:42.698427, lng:23.330869, city:"Sofia", description:"Artisan bakery inspired by traditional baking methods." },
+  // OTHER CITIES
+  { image:"http://127.0.0.1:5500/StalbataMap/locationImages/ivan vazov narodna biblioteka plovdiv.jpg",name:"Народна библиотека Иван Вазов", lat:42.139250, lng:24.745687, city:"Plovdiv", description:"Major public library and cultural institution in Plovdiv." },
+  { image:"http://127.0.0.1:5500/StalbataMap/locationImages/american uni.jpg",name:"Американски университет", lat:42.011687, lng:23.094698, city:"Blagoevgrad", description:"American University in Bulgaria campus and cultural hub." },
+  { image:"http://127.0.0.1:5500/StalbataMap/locationImages/samurai veliko tarnovo.jpeg",name:"Samurai Specialty Coffeeshop", lat:43.083909, lng:25.639381, city:"Veliko Tarnovo", description:"Specialty coffee shop with minimalist aesthetic." },
+  { image:"http://127.0.0.1:5500/StalbataMap/locationImages/regionalna biblioteka burgas.jpg",name:"Регионална библиотека Пейо Яворов", lat:42.497936, lng:27.477036, city:"Burgas", description:"Regional public library and cultural center in Burgas." }
+];
+
+// Initialize map
+const map = L.map('map').setView([42.7339, 25.4858], 7);
+
+// Tile layer
+L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+  maxZoom: 19,
+  attribution: '&copy; OpenStreetMap contributors'
+}).addTo(map);
+
+// Marker cluster
+const cluster = L.markerClusterGroup();
+
+locations.forEach(loc => {
+  // Build popup HTML
+  let popupContent = `<strong>${loc.name}</strong><br>`;
+    popupContent += '<br></br>'
+  // Only add image if it exists
+  if (loc.image && loc.image.length > 0) {
+    popupContent += `<img src="${loc.image}" alt="${loc.name}" style="width:150px; height:auto; border-radius:5px; margin-bottom:5px;" /><br>`;
+  }
+
+  // Add description
+  popupContent += `<p>${loc.description}</p>`;
+
+  // Create marker
+  const marker = L.marker([loc.lat, loc.lng]).bindPopup(popupContent);
+  cluster.addLayer(marker);
+});
+
+map.addLayer(cluster);
+</script>
+</body>
+</html>
