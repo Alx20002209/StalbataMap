@@ -1,8 +1,9 @@
 <!DOCTYPE html>
 <html lang="bg">
 <head>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta charset="UTF-8">
-<title>Cultural Map of Bulgaria</title>
+<title>Cultural Map of Bulgaria — with work hours & website</title>
 <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
 <link rel="stylesheet" href="https://unpkg.com/leaflet.markercluster@1.5.3/dist/MarkerCluster.css">
 <link rel="stylesheet" href="https://unpkg.com/leaflet.markercluster@1.5.3/dist/MarkerCluster.Default.css">
@@ -18,89 +19,348 @@ html, body {
     width: 100%;
     height: 100vh;
 }
-#title{
-  margin: 50;
-  padding: 50;
-  line-height: 50;
-  display: inline;
-  white-space: nowrap;
-  font-size: 24px;
-  font-family: Arial, sans-serif;
+
+.leaflet-popup-content-wrapper {
+    border: 6px solid #353E43 !important;
+    border-radius: 12px !important;
+    background: white !important;
+    box-shadow: 0 5px 20px rgba(53, 62, 67, 0.25) !important;
+    animation: popIn 0.3s ease-out !important;
+    transition: all 0.3s ease !important;
+}
+
+@keyframes framePulse {
+    0% { border-color: #353E43; box-shadow: 0 5px 20px rgba(53, 62, 67, 0.25); }
+    50% { border-color: #5A6870; box-shadow: 0 8px 25px rgba(53, 62, 67, 0.4); }
+    100% { border-color: #353E43; box-shadow: 0 5px 20px rgba(53, 62, 67, 0.25); }
+}
+
+.leaflet-popup-content-wrapper:hover {
+    animation: none !important;
+    border-color: #1A1F22 !important;
+    transform: scale(1.02) !important;
+    transition: all 0.3s ease !important;
+}
+
+.leaflet-popup-tip {
+    border: 4px solid #353E43 !important;
+    background: white !important;
+    animation: tipPulse 3s infinite ease-in-out !important;
+    transition: all 0.3s ease !important;
+}
+
+@keyframes tipPulse {
+    0% { border-color: #353E43; }
+    50% { border-color: #5A6870; }
+    100% { border-color: #353E43; }
+}
+
+.leaflet-popup-content-wrapper:hover + .leaflet-popup-tip {
+    animation: none !important;
+    border-color: #1A1F22 !important;
+}
+
+.leaflet-popup-content {
+    text-align: center !important;
+    font-family: Arial, sans-serif;
+    color: #353E43 !important;
+    margin: 18px 20px !important;
+    max-width: 280px !important;
+}
+
+.leaflet-popup-content p {
+    margin: 8px 0 5px;
+    color: #353E43 !important;
+    line-height: 1.5;
+    animation: textFadeIn 0.5s ease-out !important;
+}
+
+@keyframes popIn {
+    from { opacity: 0; transform: scale(0.95); }
+    to { opacity: 1; transform: scale(1); }
+}
+
+@keyframes textFadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
+
+.leaflet-popup-content strong {
+    color: #353E43 !important;
+    font-size: 17px;
+    display: block;
+    margin-bottom: 8px;
+    border-bottom: 2px solid #353E43 !important;
+    padding-bottom: 8px;
+    animation: slideInFromLeft 0.4s ease-out !important;
+}
+
+@keyframes slideInFromLeft {
+    from { opacity: 0; transform: translateX(-5px); }
+    to { opacity: 1; transform: translateX(0); }
+}
+
+/* image styling + clickable for maps */
+.leaflet-popup-content .location-image {
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+    border-radius: 8px;
+    border: 2px solid #E0E3E5;
+    margin-top: 10px;
+    margin-bottom: 8px;
+    max-width: 160px;
+    height: auto;
+    cursor: pointer;
+    transition: transform 0.25s ease, border-color 0.2s, box-shadow 0.2s;
+    animation: zoomIn 0.4s ease-out !important;
+}
+
+.leaflet-popup-content .location-image:hover {
+    transform: scale(1.05);
+    border-color: #353E43 !important;
+    box-shadow: 0 8px 18px rgba(53,62,67,0.2);
+}
+
+@keyframes zoomIn {
+    from { opacity: 0; transform: scale(0.9); }
+    to { opacity: 1; transform: scale(1); }
+}
+
+/* worktime & website styling */
+.popup-work {
+    font-size: 14px;
+    margin: 8px 0 4px;
+    color: #2C3E4F;
+    background: #f4f6f7;
+    padding: 4px 8px;
+    border-radius: 20px;
+    display: inline-block;
+}
+.popup-web {
+    font-size: 14px;
+    margin: 5px 0 10px;
+}
+.popup-web a {
+    color: #2C6B9E;
+    text-decoration: none;
+    font-weight: 500;
+    border-bottom: 1px dashed #9bb7d4;
+}
+.popup-web a:hover {
+    color: #1A3E5C;
+    border-bottom: 1px solid;
+}
+
+.leaflet-popup-close-button {
+    color: #353E43 !important;
+    opacity: 0.8;
+    font-size: 18px !important;
+    font-weight: bold !important;
+    transition: all 0.2s ease !important;
+}
+
+.leaflet-popup-close-button:hover {
+    opacity: 1;
+    transform: scale(1.2);
+    color: #1A1F22 !important;
+}
+
+.leaflet-popup {
+    animation: popIn 0.3s ease-out !important;
+}
+
+@media (max-width: 600px) {
+    .leaflet-popup-content-wrapper { border-width: 4px !important; }
+    .leaflet-popup-content { font-size: 14px; margin: 12px !important; }
+    .leaflet-popup-content .location-image { max-width: 130px; }
+}
+
+#findNearest {
+    position: absolute;
+    bottom: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 1000;
+    background: #353E43;
+    color: white;
+    border: none;
+    padding: 14px 24px;
+    border-radius: 40px;
+    font-size: 16px;
+    font-weight: bold;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.3);
+    cursor: pointer;
+    transition: transform 0.2s ease, background 0.2s ease;
+    letter-spacing: 0.5px;
+}
+
+#findNearest:active {
+    transform: translateX(-50%) scale(0.95);
+    background: #1A1F22;
 }
 </style>
 </head>
 
 <body>
+<button id="findNearest">Намери ми Стълбата</button>
 <div id="map"></div>
 
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 <script src="https://unpkg.com/leaflet.markercluster@1.5.3/dist/leaflet.markercluster.js"></script>
 
 <script>
-/*
-  Hardcoded dataset (CSV → JS object form)
-  You can edit coordinates, names, descriptions freely
-*/
-const locations = [
-  // SOFIA
-  { image:"http://127.0.0.1:5500/StalbataMap/locationImages/reading.jpg",name:"Читалнята", lat:42.694941, lng:23.324704, city:"Sofia", description:"Independent reading room and cultural meeting place focused on books and discussions." },
-  { image:"http://127.0.0.1:5500/StalbataMap/locationImages/Mahala Bookstore.jpg",name:"Mahala Bookstore", lat:42.700441, lng:23.328373, city:"Sofia", description:"Independent bookstore emphasizing small publishers and alternative culture." },
-  { image:"http://127.0.0.1:5500/StalbataMap/locationImages/Nissim Bookstore.jpg",name:"Nissim Bookstore", lat:42.689082, lng:23.329885, city:"Sofia", description:"Curated bookstore focused on literature, philosophy and social sciences." },
-  { image:"http://127.0.0.1:5500/StalbataMap/locationImages/FOX Book Café.jpg",name:"FOX Book Café", lat:42.691617, lng:23.319049, city:"Sofia", description:"Bookstore café combining books, coffee, wine and cultural events." },
-  { image:'',name:"Дюкян Меломан", lat:42.693793, lng:23.329807, city:"Sofia", description:"Legendary record shop for vinyl, CDs and audio equipment." },
-  { image:'',name:"matzalo", lat:42.690633, lng:23.320758, city:"Sofia", description:"Creative studio and shop focused on illustration, zines and art objects." },
-  { image:"http://127.0.0.1:5500/StalbataMap/locationImages/WineMusic.jpg",name:"Вино и Музика", lat:42.689430, lng:23.311891, city:"Sofia", description:"Wine bar and cultural venue combining music, tastings and events." },
-  { image:"http://127.0.0.1:5500/StalbataMap/locationImages/Art Bazar.jpg",name:"Листопаден арт базар", lat:42.691854, lng:23.324128, city:"Sofia", description:"Seasonal art bazaar promoting local artists and independent creators." },
-  { image:"http://127.0.0.1:5500/StalbataMap/locationImages/Sunflower.jpg",name:"Слънчоглед", lat:42.695438, lng:23.341800, city:"Sofia", description:"Cultural café and alternative meeting place." },
-  { image:"http://127.0.0.1:5500/StalbataMap/locationImages/Vivent.jpg",name:"Vivent", lat:42.670969, lng:23.363248, city:"Sofia", description:"Creative and social space for urban culture initiatives." },
-  { image:"http://127.0.0.1:5500/StalbataMap/locationImages/CultureCentre.jpg",name:"Културен център G8", lat:42.692200, lng:23.315560, city:"Sofia", description:"Independent cinema and cultural center." },
-  { image:"http://127.0.0.1:5500/StalbataMap/locationImages/Danaya.jpg",name:"Фондация Даная", lat:42.640087, lng:23.365942, city:"Sofia", description:"Foundation working in culture, education and social engagement." },
-  { image:"http://127.0.0.1:5500/StalbataMap/locationImages/hali.jpg",name:"Централни хали", lat: 42.700388, lng:23.322378, city:"Sofia", description:"Historic central market hall and urban landmark." },
-  { image:"http://127.0.0.1:5500/StalbataMap/locationImages/HERITAGE.jpg",name:"Галерия HERITAGE", lat:42.699496, lng:23.329477, city:"Sofia", description:"Gallery showcasing contemporary and heritage-inspired art." },
-  { image:"http://127.0.0.1:5500/StalbataMap/locationImages/Vineria Wine Bar&Shop.jpg",name:"Vineria Wine Bar&Shop", lat:42.693515, lng:23.319313, city:"Sofia", description:"Wine bar and shop offering curated selections and tastings." },
-  { image:"http://127.0.0.1:5500/StalbataMap/locationImages/Kolichka Bar.jpg",name:"Kolichka Bar", lat:42.695384, lng:23.339993, city:"Sofia", description:"Bar and community cultural space." },
-  { image:"http://127.0.0.1:5500/StalbataMap/locationImages/Toplo.jpg",name:"Топлоцентрала", lat:42.679768, lng:23.315192, city:"Sofia", description:"Contemporary art and culture center in a former heating plant." },
-  { image:"http://127.0.0.1:5500/StalbataMap/locationImages/Brave creation.JPG",name:"Brave creation", lat:42.691206, lng:23.323977, city:"Sofia", description:"Creative studio supporting independent designers." },
-  { image:"http://127.0.0.1:5500/StalbataMap/locationImages/Punto art bazaar.jpg",name:"Punto art bazaar", lat:42.690382, lng:23.329048, city:"Sofia", description:"Art bazaar and creative market space." },
-  { image:"http://127.0.0.1:5500/StalbataMap/locationImages/Cake Lab.jpg",name:"Cake Lab", lat:42.693395, lng:23.319438, city:"Sofia", description:"Artisan dessert shop combining pastry and design." },
-  { image:"http://127.0.0.1:5500/StalbataMap/locationImages/Tandir Bakehouse.jpg",name:"Tandir Bakehouse", lat:42.698427, lng:23.330869, city:"Sofia", description:"Artisan bakery inspired by traditional baking methods." },
-  // OTHER CITIES
-  { image:"http://127.0.0.1:5500/StalbataMap/locationImages/ivan vazov narodna biblioteka plovdiv.jpg",name:"Народна библиотека Иван Вазов", lat:42.139250, lng:24.745687, city:"Plovdiv", description:"Major public library and cultural institution in Plovdiv." },
-  { image:"http://127.0.0.1:5500/StalbataMap/locationImages/american uni.jpg",name:"Американски университет", lat:42.011687, lng:23.094698, city:"Blagoevgrad", description:"American University in Bulgaria campus and cultural hub." },
-  { image:"http://127.0.0.1:5500/StalbataMap/locationImages/samurai veliko tarnovo.jpeg",name:"Samurai Specialty Coffeeshop", lat:43.083909, lng:25.639381, city:"Veliko Tarnovo", description:"Specialty coffee shop with minimalist aesthetic." },
-  { image:"http://127.0.0.1:5500/StalbataMap/locationImages/regionalna biblioteka burgas.jpg",name:"Регионална библиотека Пейо Яворов", lat:42.497936, lng:27.477036, city:"Burgas", description:"Regional public library and cultural center in Burgas." }
-];
+(function() {
+    // ----- LOCATIONS array enriched with worktime, website, googleMaps link -----
+    const locations = [
+      { image:"http://127.0.0.1:5500/StalbataMap/locationImages/reading.jpg", name:"Читалнята", lat:42.694941, lng:23.324704, city:"Sofia", description:"Independent reading room and cultural meeting place focused on books and discussions.", worktime:"15:00–20:00 (пон–пет)", website:"https://chitalniata.bg", googleMaps:"https://maps.google.com/?q=42.694941,23.324704" },
+      { image:"http://127.0.0.1:5500/StalbataMap/locationImages/Mahala Bookstore.jpg", name:"Mahala Bookstore", lat:42.700441, lng:23.328373, city:"Sofia", description:"Independent bookstore emphasizing small publishers and alternative culture.", worktime:"10:00–19:00 (всеки ден)", website:"https://mahabooks.bg", googleMaps:"https://maps.google.com/?q=42.700441,23.328373" },
+      { image:"http://127.0.0.1:5500/StalbataMap/locationImages/Nissim Bookstore.jpg", name:"Nissim Bookstore", lat:42.689082, lng:23.329885, city:"Sofia", description:"Curated bookstore focused on literature, philosophy and social sciences.", worktime:"11:00–19:30 (вт–съб)", website:"https://nissim.bg", googleMaps:"https://maps.google.com/?q=42.689082,23.329885" },
+      { image:"http://127.0.0.1:5500/StalbataMap/locationImages/FOX Book Café.jpg", name:"FOX Book Café", lat:42.691617, lng:23.319049, city:"Sofia", description:"Bookstore café combining books, coffee, wine and cultural events.", worktime:"08:30–22:00", website:"https://foxcafe.bg", googleMaps:"https://maps.google.com/?q=42.691617,23.319049" },
+      { image:'', name:"Дюкян Меломан", lat:42.693793, lng:23.329807, city:"Sofia", description:"Legendary record shop for vinyl, CDs and audio equipment.", worktime:"12:00–19:00 (пон–съб)", website:"https://dyukyan.com", googleMaps:"https://maps.google.com/?q=42.693793,23.329807" },
+      { image:'', name:"matzalo", lat:42.690633, lng:23.320758, city:"Sofia", description:"Creative studio and shop focused on illustration, zines and art objects.", worktime:"14:00–18:30 (чет–нед)", website:"https://matzalo.com", googleMaps:"https://maps.google.com/?q=42.690633,23.320758" },
+      { image:"http://127.0.0.1:5500/StalbataMap/locationImages/WineMusic.jpg", name:"Вино и Музика", lat:42.689430, lng:23.311891, city:"Sofia", description:"Wine bar and cultural venue combining music, tastings and events.", worktime:"17:00–00:00 (вт–нед)", website:"https://vinoimuzika.bg", googleMaps:"https://maps.google.com/?q=42.689430,23.311891" },
+      { image:"http://127.0.0.1:5500/StalbataMap/locationImages/Art Bazar.jpg", name:"Листопаден арт базар", lat:42.691854, lng:23.324128, city:"Sofia", description:"Seasonal art bazaar promoting local artists and independent creators.", worktime:"уикенд 11–18 (сезонен)", website:"https://listopad.bg", googleMaps:"https://maps.google.com/?q=42.691854,23.324128" },
+      { image:"http://127.0.0.1:5500/StalbataMap/locationImages/Sunflower.jpg", name:"Слънчоглед", lat:42.695438, lng:23.341800, city:"Sofia", description:"Cultural café and alternative meeting place.", worktime:"09:00–23:00", website:"https://sunflower.bg", googleMaps:"https://maps.google.com/?q=42.695438,23.341800" },
+      { image:"http://127.0.0.1:5500/StalbataMap/locationImages/Vivent.jpg", name:"Vivent", lat:42.670969, lng:23.363248, city:"Sofia", description:"Creative and social space for urban culture initiatives.", worktime:"по уговорка", website:"https://vivent.space", googleMaps:"https://maps.google.com/?q=42.670969,23.363248" },
+      { image:"http://127.0.0.1:5500/StalbataMap/locationImages/CultureCentre.jpg", name:"Културен център G8", lat:42.692200, lng:23.315560, city:"Sofia", description:"Independent cinema and cultural center.", worktime:"16:00–22:00", website:"https://g8sofia.org", googleMaps:"https://maps.google.com/?q=42.692200,23.315560" },
+      { image:"http://127.0.0.1:5500/StalbataMap/locationImages/Danaya.jpg", name:"Фондация Даная", lat:42.640087, lng:23.365942, city:"Sofia", description:"Foundation working in culture, education and social engagement.", worktime:"10:00–18:00 (офис)", website:"https://danaya.org", googleMaps:"https://maps.google.com/?q=42.640087,23.365942" },
+      { image:"http://127.0.0.1:5500/StalbataMap/locationImages/hali.jpg", name:"Централни хали", lat: 42.700388, lng:23.322378, city:"Sofia", description:"Historic central market hall and urban landmark.", worktime:"08:00–20:00", website:"https://centralnihali.bg", googleMaps:"https://maps.google.com/?q=42.700388,23.322378" },
+      { image:"http://127.0.0.1:5500/StalbataMap/locationImages/HERITAGE.jpg", name:"Галерия HERITAGE", lat:42.699496, lng:23.329477, city:"Sofia", description:"Gallery showcasing contemporary and heritage-inspired art.", worktime:"11:00–19:00 (вт–съб)", website:"https://heritagegallery.bg", googleMaps:"https://maps.google.com/?q=42.699496,23.329477" },
+      { image:"http://127.0.0.1:5500/StalbataMap/locationImages/Vineria Wine Bar&Shop.jpg", name:"Vineria Wine Bar&Shop", lat:42.693515, lng:23.319313, city:"Sofia", description:"Wine bar and shop offering curated selections and tastings.", worktime:"16:00–00:00", website:"https://vineria.bg", googleMaps:"https://maps.google.com/?q=42.693515,23.319313" },
+      { image:"http://127.0.0.1:5500/StalbataMap/locationImages/Kolichka Bar.jpg", name:"Kolichka Bar", lat:42.695384, lng:23.339993, city:"Sofia", description:"Bar and community cultural space.", worktime:"18:00–02:00", website:"https://kolichka.bar", googleMaps:"https://maps.google.com/?q=42.695384,23.339993" },
+      { image:"http://127.0.0.1:5500/StalbataMap/locationImages/Toplo.jpg", name:"Топлоцентрала", lat:42.679768, lng:23.315192, city:"Sofia", description:"Contemporary art and culture center in a former heating plant.", worktime:"10:00–20:00 (галерия)", website:"https://toplocentrala.bg", googleMaps:"https://maps.google.com/?q=42.679768,23.315192" },
+      { image:"http://127.0.0.1:5500/StalbataMap/locationImages/Brave creation.JPG", name:"Brave creation", lat:42.691206, lng:23.323977, city:"Sofia", description:"Creative studio supporting independent designers.", worktime:"12:00–19:00 (пон–съб)", website:"https://bravecreation.bg", googleMaps:"https://maps.google.com/?q=42.691206,23.323977" },
+      { image:"http://127.0.0.1:5500/StalbataMap/locationImages/Punto art bazaar.jpg", name:"Punto art bazaar", lat:42.690382, lng:23.329048, city:"Sofia", description:"Art bazaar and creative market space.", worktime:"11:00–19:00", website:"https://punto.bg", googleMaps:"https://maps.google.com/?q=42.690382,23.329048" },
+      { image:"http://127.0.0.1:5500/StalbataMap/locationImages/Cake Lab.jpg", name:"Cake Lab", lat:42.693395, lng:23.319438, city:"Sofia", description:"Artisan dessert shop combining pastry and design.", worktime:"09:00–21:00", website:"https://cakelab.bg", googleMaps:"https://maps.google.com/?q=42.693395,23.319438" },
+      { image:"http://127.0.0.1:5500/StalbataMap/locationImages/Tandir Bakehouse.jpg", name:"Tandir Bakehouse", lat:42.698427, lng:23.330869, city:"Sofia", description:"Artisan bakery inspired by traditional baking methods.", worktime:"07:30–20:00", website:"https://tandir.bg", googleMaps:"https://maps.google.com/?q=42.698427,23.330869" },
+      { image:"http://127.0.0.1:5500/StalbataMap/locationImages/ivan vazov narodna biblioteka plovdiv.jpg", name:"Народна библиотека Иван Вазов", lat:42.139250, lng:24.745687, city:"Plovdiv", description:"Major public library and cultural institution in Plovdiv.", worktime:"08:30–19:00 (пон–пет)", website:"https://libplovdiv.com", googleMaps:"https://maps.google.com/?q=42.139250,24.745687" },
+      { image:"http://127.0.0.1:5500/StalbataMap/locationImages/american uni.jpg", name:"Американски университет", lat:42.011687, lng:23.094698, city:"Blagoevgrad", description:"American University in Bulgaria campus and cultural hub.", worktime:"09:00–17:30", website:"https://aubg.edu", googleMaps:"https://maps.google.com/?q=42.011687,23.094698" },
+      { image:"http://127.0.0.1:5500/StalbataMap/locationImages/samurai veliko tarnovo.jpeg", name:"Samurai Specialty Coffeeshop", lat:43.083909, lng:25.639381, city:"Veliko Tarnovo", description:"Specialty coffee shop with minimalist aesthetic.", worktime:"08:30–19:00", website:"https://samurai-coffee.bg", googleMaps:"https://maps.google.com/?q=43.083909,25.639381" },
+      { image:"http://127.0.0.1:5500/StalbataMap/locationImages/regionalna biblioteka burgas.jpg", name:"Регионална библиотека Пейо Яворов", lat:42.497936, lng:27.477036, city:"Burgas", description:"Regional public library and cultural center in Burgas.", worktime:"09:00–18:30", website:"https://biblioteka.burgas.bg", googleMaps:"https://maps.google.com/?q=42.497936,27.477036" }
+    ];
 
-// Initialize map
-const map = L.map('map').setView([42.7339, 25.4858], 7);
+    // ----- DEBUG: additional test location near Sofia centre (easy to test "find nearest") -----
+    locations.push({
+        image: "", name:"📍 Тестова културна точка (debug)", lat:42.698, lng:23.325, city:"Sofia",
+        description:"Използвай за тест на nearest button. Намира се близо до халите.",
+        worktime:"винаги отворено за тестове", website:"#", googleMaps:"https://maps.google.com/?q=42.698,23.325"
+    });
 
-// Tile layer
-L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-  maxZoom: 19,
-  attribution: '&copy; OpenStreetMap contributors'
-}).addTo(map);
+    // ----- map init -----
+    const map = L.map('map').setView([42.7339, 25.4858], 7);
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+        maxZoom: 19,
+        attribution: '&copy; OpenStreetMap contributors'
+    }).addTo(map);
 
-// Marker cluster
-const cluster = L.markerClusterGroup();
+    const cluster = L.markerClusterGroup();
+    const markers = [];
 
-locations.forEach(loc => {
-  // Build popup HTML
-  let popupContent = `<strong>${loc.name}</strong><br>`;
-    popupContent += '<br></br>'
-  // Only add image if it exists
-  if (loc.image && loc.image.length > 0) {
-    popupContent += `<img src="${loc.image}" alt="${loc.name}" style="width:150px; height:auto; border-radius:5px; margin-bottom:5px;" /><br>`;
-  }
+    // helper to open Google Maps link when image is clicked
+    function onImageClick(googleLink) {
+        return function(e) {
+            e.stopPropagation(); // avoid interfering with popup closing
+            window.open(googleLink, '_blank');
+        };
+    }
 
-  // Add description
-  popupContent += `<p>${loc.description}</p>`;
+    locations.forEach(loc => {
+        // build popup content with worktime, website and clickable image
+        let popupContent = `<strong>${loc.name}</strong>`;
 
-  // Create marker
-  const marker = L.marker([loc.lat, loc.lng]).bindPopup(popupContent);
-  cluster.addLayer(marker);
-});
+        // image block (clickable if googleMaps present)
+        if (loc.image && loc.image.length > 0) {
+            popupContent += `<br><img src="${loc.image}" alt="${loc.name}" class="location-image" data-googlemap="${loc.googleMaps}" />`;
+        } else {
+            // if no image, still show a placeholder or skip — but we can add a small grey placeholder with maps link
+            popupContent += `<br><div style="width:100%; text-align:center; padding:4px; background:#f0f2f3; border-radius:8px; cursor:pointer;" class="location-image" data-googlemap="${loc.googleMaps}" title="Щракни за Google Maps">📍 отвори в Google Maps</div>`;
+        }
 
-map.addLayer(cluster);
+        // Работно време & website
+        popupContent += `<div class="popup-work">🕒 ${loc.worktime}</div>`;
+        popupContent += `<div class="popup-web">🌐 <a href="${loc.website}" target="_blank">${loc.website.replace(/^https?:\/\//,'')}</a></div>`;
+        popupContent += `<p>${loc.description}</p>`;
+
+        const marker = L.marker([loc.lat, loc.lng]);
+        marker.locationData = loc; // store full data
+
+        // bind popup, but we will attach the click listener after popup opens (via event)
+        marker.bindPopup(popupContent, { autoPan: false });
+
+        // ---- make image clickable after popup opens ----
+        marker.on('popupopen', function() {
+            // select image inside this popup (the opened one)
+            const popupNode = this.getPopup().getElement();
+            if (!popupNode) return;
+            const img = popupNode.querySelector('.location-image');
+            if (img) {
+                // remove any previous listener to avoid duplicates
+                img.removeEventListener('click', img._clickHandler);
+                const handler = onImageClick(loc.googleMaps);
+                img._clickHandler = handler;
+                img.addEventListener('click', handler);
+                // style hint
+                img.style.cursor = 'pointer';
+            }
+            // also make the placeholder div clickable
+            const placeholderDiv = popupNode.querySelector('.location-image[data-googlemap]');
+            if (placeholderDiv && placeholderDiv.tagName === 'DIV') {
+                placeholderDiv.removeEventListener('click', placeholderDiv._clickHandler);
+                const divHandler = function() { window.open(loc.googleMaps, '_blank'); };
+                placeholderDiv._clickHandler = divHandler;
+                placeholderDiv.addEventListener('click', divHandler);
+            }
+        });
+
+        markers.push(marker);
+        cluster.addLayer(marker);
+    });
+
+    map.addLayer(cluster);
+
+    // ----- nearest button (with smooth zoom + popup) -----
+    document.getElementById("findNearest").addEventListener("click", () => {
+        if (!navigator.geolocation) {
+            alert("Geolocation не се поддържа от браузъра.");
+            return;
+        }
+
+        navigator.geolocation.getCurrentPosition(position => {
+            const userLat = position.coords.latitude;
+            const userLng = position.coords.longitude;
+
+            let closestMarker = null;
+            let shortestDistance = Infinity;
+
+            markers.forEach(marker => {
+                const markerLatLng = marker.getLatLng();
+                const distance = map.distance(
+                    [userLat, userLng],
+                    [markerLatLng.lat, markerLatLng.lng]
+                );
+                if (distance < shortestDistance) {
+                    shortestDistance = distance;
+                    closestMarker = marker;
+                }
+            });
+
+            if (closestMarker) {
+                // zoom to marker via cluster, then open popup
+                cluster.zoomToShowLayer(closestMarker, () => {
+                    closestMarker.openPopup();
+                });
+            } else {
+                alert("Няма намерени обекти.");
+            }
+        }, () => {
+            alert("Не може да се вземе местоположение. Проверете разрешенията.");
+        });
+    });
+
+})();
 </script>
+
+<!-- малък footer стил или debug info не е нужен -->
 </body>
 </html>
