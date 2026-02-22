@@ -38,7 +38,6 @@ html, body {
 .leaflet-popup-content-wrapper:hover {
     animation: none !important;
     border-color: #1A1F22 !important;
-    transform: scale(1.02) !important;
     transition: all 0.3s ease !important;
 }
 
@@ -122,12 +121,11 @@ html, body {
     box-shadow: 0 8px 18px rgba(53,62,67,0.2);
 }
 
-@keyframes zoomIn {
-    from { opacity: 0; transform: scale(0.9); }
-    to { opacity: 1; transform: scale(1); }
+@keyframes popIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
 }
 
-/* worktime & website styling */
 .popup-work {
     font-size: 14px;
     margin: 8px 0 4px;
@@ -168,6 +166,12 @@ html, body {
 
 .leaflet-popup {
     animation: popIn 0.3s ease-out !important;
+    opacity: 0;
+    transition: opacity 0.15s ease;
+}
+
+.map-ready .leaflet-popup {
+    opacity: 1;
 }
 
 @media (max-width: 600px) {
@@ -212,7 +216,7 @@ html, body {
 <script>
 (function() {
     // ----- LOCATIONS array enriched with worktime, website, googleMaps link -----
-    const locations = [
+ const locations = [
       { image:"http://127.0.0.1:5500/StalbataMap/locationImages/reading.jpg", name:"Читалнята", lat:42.694941, lng:23.324704, city:"Sofia", description:"Independent reading room and cultural meeting place focused on books and discussions.", worktime:"15:00–20:00 (пон–пет)", website:"https://chitalniata.bg", googleMaps:"https://maps.google.com/?q=42.694941,23.324704" },
       { image:"http://127.0.0.1:5500/StalbataMap/locationImages/Mahala Bookstore.jpg", name:"Mahala Bookstore", lat:42.700441, lng:23.328373, city:"Sofia", description:"Independent bookstore emphasizing small publishers and alternative culture.", worktime:"10:00–19:00 (всеки ден)", website:"https://mahabooks.bg", googleMaps:"https://maps.google.com/?q=42.700441,23.328373" },
       { image:"http://127.0.0.1:5500/StalbataMap/locationImages/Nissim Bookstore.jpg", name:"Nissim Bookstore", lat:42.689082, lng:23.329885, city:"Sofia", description:"Curated bookstore focused on literature, philosophy and social sciences.", worktime:"11:00–19:30 (вт–съб)", website:"https://nissim.bg", googleMaps:"https://maps.google.com/?q=42.689082,23.329885" },
@@ -237,7 +241,12 @@ html, body {
       { image:"http://127.0.0.1:5500/StalbataMap/locationImages/ivan vazov narodna biblioteka plovdiv.jpg", name:"Народна библиотека Иван Вазов", lat:42.139250, lng:24.745687, city:"Plovdiv", description:"Major public library and cultural institution in Plovdiv.", worktime:"08:30–19:00 (пон–пет)", website:"https://libplovdiv.com", googleMaps:"https://maps.google.com/?q=42.139250,24.745687" },
       { image:"http://127.0.0.1:5500/StalbataMap/locationImages/american uni.jpg", name:"Американски университет", lat:42.011687, lng:23.094698, city:"Blagoevgrad", description:"American University in Bulgaria campus and cultural hub.", worktime:"09:00–17:30", website:"https://aubg.edu", googleMaps:"https://maps.google.com/?q=42.011687,23.094698" },
       { image:"http://127.0.0.1:5500/StalbataMap/locationImages/samurai veliko tarnovo.jpeg", name:"Samurai Specialty Coffeeshop", lat:43.083909, lng:25.639381, city:"Veliko Tarnovo", description:"Specialty coffee shop with minimalist aesthetic.", worktime:"08:30–19:00", website:"https://samurai-coffee.bg", googleMaps:"https://maps.google.com/?q=43.083909,25.639381" },
+      { image:"http://127.0.0.1:5500/StalbataMap/locationImages/regionalna biblioteka burgas.jpg", name:"Регионална библиотека Пейо Яворов", lat:42.497936, lng:27.477036, city:"Burgas", description:"Regional public library and cultural center in Burgas.", worktime:"09:00–18:30", website:"https://biblioteka.burgas.bg", googleMaps:"https://maps.google.com/?q=42.497936,27.477036" },
       { image:"http://127.0.0.1:5500/StalbataMap/locationImages/regionalna biblioteka burgas.jpg", name:"Регионална библиотека Пейо Яворов", lat:42.497936, lng:27.477036, city:"Burgas", description:"Regional public library and cultural center in Burgas.", worktime:"09:00–18:30", website:"https://biblioteka.burgas.bg", googleMaps:"https://maps.google.com/?q=42.497936,27.477036" }
+
+
+
+
     ];
 
     // ----- DEBUG: additional test location near Sofia centre (easy to test "find nearest") -----
@@ -247,8 +256,16 @@ html, body {
         worktime:"винаги отворено за тестове", website:"#", googleMaps:"https://maps.google.com/?q=42.698,23.325"
     });
 
-    // ----- map init -----
     const map = L.map('map').setView([42.7339, 25.4858], 7);
+    document.getElementById("map").classList.add("map-ready");
+    map.on("movestart", () => {
+        document.getElementById("map").classList.remove("map-ready");
+    });
+
+    map.on("moveend", () => {
+        document.getElementById("map").classList.add("map-ready")
+    })
+
     L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
         maxZoom: 19,
         attribution: '&copy; OpenStreetMap contributors'
@@ -257,53 +274,42 @@ html, body {
     const cluster = L.markerClusterGroup();
     const markers = [];
 
-    // helper to open Google Maps link when image is clicked
     function onImageClick(googleLink) {
         return function(e) {
-            e.stopPropagation(); // avoid interfering with popup closing
+            e.stopPropagation();
             window.open(googleLink, '_blank');
         };
     }
 
     locations.forEach(loc => {
-        // build popup content with worktime, website and clickable image
         let popupContent = `<strong>${loc.name}</strong>`;
 
-        // image block (clickable if googleMaps present)
         if (loc.image && loc.image.length > 0) {
             popupContent += `<br><img src="${loc.image}" alt="${loc.name}" class="location-image" data-googlemap="${loc.googleMaps}" />`;
         } else {
-            // if no image, still show a placeholder or skip — but we can add a small grey placeholder with maps link
             popupContent += `<br><div style="width:100%; text-align:center; padding:4px; background:#f0f2f3; border-radius:8px; cursor:pointer;" class="location-image" data-googlemap="${loc.googleMaps}" title="Щракни за Google Maps">📍 отвори в Google Maps</div>`;
         }
 
-        // Работно време & website
         popupContent += `<div class="popup-work">🕒 ${loc.worktime}</div>`;
         popupContent += `<div class="popup-web">🌐 <a href="${loc.website}" target="_blank">${loc.website.replace(/^https?:\/\//,'')}</a></div>`;
         popupContent += `<p>${loc.description}</p>`;
 
         const marker = L.marker([loc.lat, loc.lng]);
-        marker.locationData = loc; // store full data
+        marker.locationData = loc; 
 
-        // bind popup, but we will attach the click listener after popup opens (via event)
-        marker.bindPopup(popupContent, { autoPan: false });
+        marker.bindPopup(popupContent, { autoPan: true });
 
-        // ---- make image clickable after popup opens ----
         marker.on('popupopen', function() {
-            // select image inside this popup (the opened one)
             const popupNode = this.getPopup().getElement();
             if (!popupNode) return;
             const img = popupNode.querySelector('.location-image');
             if (img) {
-                // remove any previous listener to avoid duplicates
                 img.removeEventListener('click', img._clickHandler);
                 const handler = onImageClick(loc.googleMaps);
                 img._clickHandler = handler;
                 img.addEventListener('click', handler);
-                // style hint
                 img.style.cursor = 'pointer';
             }
-            // also make the placeholder div clickable
             const placeholderDiv = popupNode.querySelector('.location-image[data-googlemap]');
             if (placeholderDiv && placeholderDiv.tagName === 'DIV') {
                 placeholderDiv.removeEventListener('click', placeholderDiv._clickHandler);
@@ -319,7 +325,6 @@ html, body {
 
     map.addLayer(cluster);
 
-    // ----- nearest button (with smooth zoom + popup) -----
     document.getElementById("findNearest").addEventListener("click", () => {
         if (!navigator.geolocation) {
             alert("Geolocation не се поддържа от браузъра.");
@@ -360,7 +365,5 @@ html, body {
 
 })();
 </script>
-
-<!-- малък footer стил или debug info не е нужен -->
 </body>
 </html>
