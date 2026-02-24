@@ -19,7 +19,35 @@ html, body {
     width: 100%;
     height: 100vh;
 }
+.fb-link {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    background: #f0f2f5;
+    transition: all 0.25s ease;
+    text-decoration: none;
+}
 
+.fb-icon {
+    width: 18px;
+    height: 18px;
+    fill: #1877f2;
+    transition: transform 0.25s ease;
+}
+
+.fb-link:hover {
+    background: #1877f2;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(24,119,242,0.3);
+}
+
+.fb-link:hover .fb-icon {
+    fill: white;
+    transform: scale(1.1);
+}
 .leaflet-popup-content-wrapper {
     border: 6px solid #353E43 !important;
     border-radius: 12px !important;
@@ -215,46 +243,602 @@ html, body {
 
 <script>
 (function() {
-    // ----- LOCATIONS array enriched with worktime, website, googleMaps link -----
- const locations = [
-      { image:"http://127.0.0.1:5500/StalbataMap/locationImages/reading.jpg", name:"Читалнята", lat:42.694941, lng:23.324704, city:"Sofia", description:"Independent reading room and cultural meeting place focused on books and discussions.", worktime:"15:00–20:00 (пон–пет)", website:"https://chitalniata.bg", googleMaps:"https://maps.google.com/?q=42.694941,23.324704" },
-      { image:"http://127.0.0.1:5500/StalbataMap/locationImages/Mahala Bookstore.jpg", name:"Mahala Bookstore", lat:42.700441, lng:23.328373, city:"Sofia", description:"Independent bookstore emphasizing small publishers and alternative culture.", worktime:"10:00–19:00 (всеки ден)", website:"https://mahabooks.bg", googleMaps:"https://maps.google.com/?q=42.700441,23.328373" },
-      { image:"http://127.0.0.1:5500/StalbataMap/locationImages/Nissim Bookstore.jpg", name:"Nissim Bookstore", lat:42.689082, lng:23.329885, city:"Sofia", description:"Curated bookstore focused on literature, philosophy and social sciences.", worktime:"11:00–19:30 (вт–съб)", website:"https://nissim.bg", googleMaps:"https://maps.google.com/?q=42.689082,23.329885" },
-      { image:"http://127.0.0.1:5500/StalbataMap/locationImages/FOX Book Café.jpg", name:"FOX Book Café", lat:42.691617, lng:23.319049, city:"Sofia", description:"Bookstore café combining books, coffee, wine and cultural events.", worktime:"08:30–22:00", website:"https://foxcafe.bg", googleMaps:"https://maps.google.com/?q=42.691617,23.319049" },
-      { image:'', name:"Дюкян Меломан", lat:42.693793, lng:23.329807, city:"Sofia", description:"Legendary record shop for vinyl, CDs and audio equipment.", worktime:"12:00–19:00 (пон–съб)", website:"https://dyukyan.com", googleMaps:"https://maps.google.com/?q=42.693793,23.329807" },
-      { image:'', name:"matzalo", lat:42.690633, lng:23.320758, city:"Sofia", description:"Creative studio and shop focused on illustration, zines and art objects.", worktime:"14:00–18:30 (чет–нед)", website:"https://matzalo.com", googleMaps:"https://maps.google.com/?q=42.690633,23.320758" },
-      { image:"http://127.0.0.1:5500/StalbataMap/locationImages/WineMusic.jpg", name:"Вино и Музика", lat:42.689430, lng:23.311891, city:"Sofia", description:"Wine bar and cultural venue combining music, tastings and events.", worktime:"17:00–00:00 (вт–нед)", website:"https://vinoimuzika.bg", googleMaps:"https://maps.google.com/?q=42.689430,23.311891" },
-      { image:"http://127.0.0.1:5500/StalbataMap/locationImages/Art Bazar.jpg", name:"Листопаден арт базар", lat:42.691854, lng:23.324128, city:"Sofia", description:"Seasonal art bazaar promoting local artists and independent creators.", worktime:"уикенд 11–18 (сезонен)", website:"https://listopad.bg", googleMaps:"https://maps.google.com/?q=42.691854,23.324128" },
-      { image:"http://127.0.0.1:5500/StalbataMap/locationImages/Sunflower.jpg", name:"Слънчоглед", lat:42.695438, lng:23.341800, city:"Sofia", description:"Cultural café and alternative meeting place.", worktime:"09:00–23:00", website:"https://sunflower.bg", googleMaps:"https://maps.google.com/?q=42.695438,23.341800" },
-      { image:"http://127.0.0.1:5500/StalbataMap/locationImages/Vivent.jpg", name:"Vivent", lat:42.670969, lng:23.363248, city:"Sofia", description:"Creative and social space for urban culture initiatives.", worktime:"по уговорка", website:"https://vivent.space", googleMaps:"https://maps.google.com/?q=42.670969,23.363248" },
-      { image:"http://127.0.0.1:5500/StalbataMap/locationImages/CultureCentre.jpg", name:"Културен център G8", lat:42.692200, lng:23.315560, city:"Sofia", description:"Independent cinema and cultural center.", worktime:"16:00–22:00", website:"https://g8sofia.org", googleMaps:"https://maps.google.com/?q=42.692200,23.315560" },
-      { image:"http://127.0.0.1:5500/StalbataMap/locationImages/Danaya.jpg", name:"Фондация Даная", lat:42.640087, lng:23.365942, city:"Sofia", description:"Foundation working in culture, education and social engagement.", worktime:"10:00–18:00 (офис)", website:"https://danaya.org", googleMaps:"https://maps.google.com/?q=42.640087,23.365942" },
-      { image:"http://127.0.0.1:5500/StalbataMap/locationImages/hali.jpg", name:"Централни хали", lat: 42.700388, lng:23.322378, city:"Sofia", description:"Historic central market hall and urban landmark.", worktime:"08:00–20:00", website:"https://centralnihali.bg", googleMaps:"https://maps.google.com/?q=42.700388,23.322378" },
-      { image:"http://127.0.0.1:5500/StalbataMap/locationImages/HERITAGE.jpg", name:"Галерия HERITAGE", lat:42.699496, lng:23.329477, city:"Sofia", description:"Gallery showcasing contemporary and heritage-inspired art.", worktime:"11:00–19:00 (вт–съб)", website:"https://heritagegallery.bg", googleMaps:"https://maps.google.com/?q=42.699496,23.329477" },
-      { image:"http://127.0.0.1:5500/StalbataMap/locationImages/Vineria Wine Bar&Shop.jpg", name:"Vineria Wine Bar&Shop", lat:42.693515, lng:23.319313, city:"Sofia", description:"Wine bar and shop offering curated selections and tastings.", worktime:"16:00–00:00", website:"https://vineria.bg", googleMaps:"https://maps.google.com/?q=42.693515,23.319313" },
-      { image:"http://127.0.0.1:5500/StalbataMap/locationImages/Kolichka Bar.jpg", name:"Kolichka Bar", lat:42.695384, lng:23.339993, city:"Sofia", description:"Bar and community cultural space.", worktime:"18:00–02:00", website:"https://kolichka.bar", googleMaps:"https://maps.google.com/?q=42.695384,23.339993" },
-      { image:"http://127.0.0.1:5500/StalbataMap/locationImages/Toplo.jpg", name:"Топлоцентрала", lat:42.679768, lng:23.315192, city:"Sofia", description:"Contemporary art and culture center in a former heating plant.", worktime:"10:00–20:00 (галерия)", website:"https://toplocentrala.bg", googleMaps:"https://maps.google.com/?q=42.679768,23.315192" },
-      { image:"http://127.0.0.1:5500/StalbataMap/locationImages/Brave creation.JPG", name:"Brave creation", lat:42.691206, lng:23.323977, city:"Sofia", description:"Creative studio supporting independent designers.", worktime:"12:00–19:00 (пон–съб)", website:"https://bravecreation.bg", googleMaps:"https://maps.google.com/?q=42.691206,23.323977" },
-      { image:"http://127.0.0.1:5500/StalbataMap/locationImages/Punto art bazaar.jpg", name:"Punto art bazaar", lat:42.690382, lng:23.329048, city:"Sofia", description:"Art bazaar and creative market space.", worktime:"11:00–19:00", website:"https://punto.bg", googleMaps:"https://maps.google.com/?q=42.690382,23.329048" },
-      { image:"http://127.0.0.1:5500/StalbataMap/locationImages/Cake Lab.jpg", name:"Cake Lab", lat:42.693395, lng:23.319438, city:"Sofia", description:"Artisan dessert shop combining pastry and design.", worktime:"09:00–21:00", website:"https://cakelab.bg", googleMaps:"https://maps.google.com/?q=42.693395,23.319438" },
-      { image:"http://127.0.0.1:5500/StalbataMap/locationImages/Tandir Bakehouse.jpg", name:"Tandir Bakehouse", lat:42.698427, lng:23.330869, city:"Sofia", description:"Artisan bakery inspired by traditional baking methods.", worktime:"07:30–20:00", website:"https://tandir.bg", googleMaps:"https://maps.google.com/?q=42.698427,23.330869" },
-      { image:"http://127.0.0.1:5500/StalbataMap/locationImages/ivan vazov narodna biblioteka plovdiv.jpg", name:"Народна библиотека Иван Вазов", lat:42.139250, lng:24.745687, city:"Plovdiv", description:"Major public library and cultural institution in Plovdiv.", worktime:"08:30–19:00 (пон–пет)", website:"https://libplovdiv.com", googleMaps:"https://maps.google.com/?q=42.139250,24.745687" },
-      { image:"http://127.0.0.1:5500/StalbataMap/locationImages/american uni.jpg", name:"Американски университет", lat:42.011687, lng:23.094698, city:"Blagoevgrad", description:"American University in Bulgaria campus and cultural hub.", worktime:"09:00–17:30", website:"https://aubg.edu", googleMaps:"https://maps.google.com/?q=42.011687,23.094698" },
-      { image:"http://127.0.0.1:5500/StalbataMap/locationImages/samurai veliko tarnovo.jpeg", name:"Samurai Specialty Coffeeshop", lat:43.083909, lng:25.639381, city:"Veliko Tarnovo", description:"Specialty coffee shop with minimalist aesthetic.", worktime:"08:30–19:00", website:"https://samurai-coffee.bg", googleMaps:"https://maps.google.com/?q=43.083909,25.639381" },
-      { image:"http://127.0.0.1:5500/StalbataMap/locationImages/regionalna biblioteka burgas.jpg", name:"Регионална библиотека Пейо Яворов", lat:42.497936, lng:27.477036, city:"Burgas", description:"Regional public library and cultural center in Burgas.", worktime:"09:00–18:30", website:"https://biblioteka.burgas.bg", googleMaps:"https://maps.google.com/?q=42.497936,27.477036" },
-      { image:"http://127.0.0.1:5500/StalbataMap/locationImages/regionalna biblioteka burgas.jpg", name:"Регионална библиотека Пейо Яворов", lat:42.497936, lng:27.477036, city:"Burgas", description:"Regional public library and cultural center in Burgas.", worktime:"09:00–18:30", website:"https://biblioteka.burgas.bg", googleMaps:"https://maps.google.com/?q=42.497936,27.477036" }
 
+const locations = [
+  {
+    id: 1,
+    name: "читАлнЯта",
+    lat: 42.694941,
+    lng: 23.324704,
+    city: "Sofia",
+    image: "http://127.0.0.1:5500/StalbataMap/locationImages/reading.jpg",
+    description: `След дълги години безстопанственост, през лятото на 2015г. стъкленият павилион на алеята зад фонтаните бе изцяло обновен, за да посреща гражданите и туристите в столицата.
+В основата на читАлнЯта стои идеята за създаването на нова, модерна читалня в центъра на София, която да бъде атрактивна обществена среда за четене и обмяна на книги.
+Уютно място, което да вдъхновява любовта към книгите в градската среда ежедневно.`,
+    worktime: "Понеделник-Неделя:<br>10:00ч.–14:00ч.<br>14:30ч.–20:00ч.",
+    website: "https://www.chitalnyata.bg",
+    googleMaps: "https://maps.google.com/?q=42.694941,23.324704"
+  },
+  {
+    id: 2,
+    name: "СФУМАТО",
+    lat: 42.697899,
+    lng: 23.345753,
+    city: "Sofia",
+    image: "http://127.0.0.1:5500/StalbataMap/locationImages/sfumato.jpg",
+    description:`"Сфумато” не постулира и не обича констатациите.
+Ние се доверяваме на сетивата, на паметта на клетката и предизвикваме у зрителя Поета.
+Езикът на “Сфумато” не подлежи на формално заучаване. Театралната работилница не е театър, а по-скоро път, който трябва да бъде извървян.`,
+    worktime: "Каса:<br>14:00ч.-19:00ч.",
+    website: "http://sfumato.info",
+    googleMaps: "https://maps.google.com/?q=42.694941,23.346077"
+  },
+  {
+    id: 3,
+    name: "Зала “България",
+    lat: 42.695066,
+    lng: 23.327340,
+    city: "Sofia",
+    image: "http://127.0.0.1:5500/StalbataMap/locationImages/zalaBG.jpg",
+    description: `Днес Зала „България“ е основно средище за сценични изяви на български и чуждестранни изпълнители и музикални състави – концерти, конкурси, звукозаписи, прегледи, фестивали, лектории и др.`,
+    worktime: "Каса:<br>Понеделник–Петък:<br>09:00ч.-14:30ч.<br>15:00ч-19:30ч.<br>Събота-Неделя:<br>11:00ч.–14:30ч.<br>15:00ч–19:30ч.",
+    website: "https://sofiaphilharmonic.com/zala/голяма-зала-българия/",
+    googleMaps: "https://maps.google.com/?q=42.695066,23.327340"
+  },
+  {
+    id: 4,
+    name: "Книжарница “Книжен плъх”",
+    lat: 42.680590,
+    lng: 23.323949,
+    city: "Sofia",
+    image: "http://127.0.0.1:5500/StalbataMap/locationImages/bookrat.jpg",
+    description: `Издателство Книжен плъх е семейна компания, създадена през 2023 година.
+Любовта ни към хубавите и добре изработени книги ни накараха да се заемем с трудната задача да подкрепим хуманитарните произведения, излизащи на българския книжен пазар.`,
+    worktime: "Понеделник-Събота:<br>11:30-19:30",
+    website: "https://bookrat.bg",
+    googleMaps: "https://maps.google.com/?q=42.680590,23.323949"
+  },
+  {
+    id: 5,
+    name: "Mahala Bookstore",
+    lat: 42.700441,
+    lng: 23.328373,
+    city: "Sofia",
+    image: "http://127.0.0.1:5500/StalbataMap/locationImages/Mahala Bookstore.jpg",
+    description: `We don't believe in genres. We believe that books have a mysterious way of finding us exactly when they're supposed to, making sense to what looks unrelated, but is actually deeply connected.`,
+    worktime: "Вторник-Неделя:<br>11:00-19:00",
+    website: "https://mahala.bg",
+    googleMaps: "https://maps.google.com/?q=42.700441,23.328373"
+  },
+  {
+    id: 6,
+    name: "Книжарница Нисим",
+    lat: 42.689082,
+    lng: 23.329885,
+    city: "Sofia",
+    image: "http://127.0.0.1:5500/StalbataMap/locationImages/NISSIM.jpg",
+    description: `Ако я нямаме, ще я намерим!`,
+    worktime: "Понеделник-Петък:<br>12:00ч.–19:00ч.",
+    website: "http://www.nissimbooks.com",
+    googleMaps: "https://maps.google.com/?q=42.689082,23.329885"
+  },
+  {
+    id: 7,
+    name: "Жираф Кафе-Книжарница",
+    lat: 42.685439,
+    lng: 23.323424,
+    city: "Sofia",
+    image:"http://127.0.0.1:5500/StalbataMap/locationImages/cozy-atmosphere-in-the.jpg",
+    description: `Вярваме, че всеки човек е уникален и ценен!
+Мечтаем да живеем в хармония и разбирателство помежду си!
+Заедно изграждаме общество от личности, изпълнени с вяра, надежда и любов!`,
+    worktime: "Понеделник-Петък:<br>8:00ч.–21:00ч<br>Събота-Неделя:<br>8:00ч.–20:00ч.",
+    website: "https://giraffecafe.bg",
+    googleMaps: "https://maps.google.com/?q=42.685439,23.323424"
+  },
+  {
+    id: 8,
+    name: "FOX book café",
+    lat: 42.691617,
+    lng: 23.319049,
+    city: "Sofia",
+    image: "http://127.0.0.1:5500/StalbataMap/locationImages/foxclub3.jpg",
+    description: `Място за култура и изкуства, където всеки може да се наслади на чаша ароматно кафе, уханна чаша релаксиращ или тонизиращ чай, да вкуси от домашно приготвените лимонади и печива.`,
+    worktime: "Понеделник-Неделя:<br>10:00ч.–20:00ч.",
+    website: "https://foxbooks.bg",
+    googleMaps: "https://maps.google.com/?q=42.691617,23.319049"
+  },
+  {
+    id: 9,
+    name: "Книжарница Vivent",
+    lat: 42.670969,
+    lng: 23.363248,
+    city: "Sofia",
+    image: "http://127.0.0.1:5500/StalbataMap/locationImages/Vivent.jpg",
+    description: `Светът е книга и тези, които не пътуват, четат само една страница.`,
+    worktime: "Вторник-Събота:<br>10:00ч.–20:00ч.",
+    website: "https://www.facebook.com/Vivent.BG?locale=bg_BG",
+    googleMaps: "https://maps.google.com/?q=42.670969,23.363248"
+  },
+  {
+    id: 10,
+    name: "Светофар - Пространство за култура и литература",
+    lat: 42.692023,
+    lng: 23.324877,
+    city: "Sofia",
+    image: "http://127.0.0.1:5500/StalbataMap/locationImages/Svetofar.jpg",
+    description: `Пространство за култура и литература`,
+    worktime: "Понеделник-Петък:<br>15:00ч. - 20:00ч.",
+    website: "https://www.facebook.com/svetofar.sofia/",
+    googleMaps: "https://maps.google.com/?q=42.692023,23.324877"
+  },
+  {
+    id: 11,
+    name: "Editóri",
+    lat: 42.6926829,
+    lng: 23.3429267,
+    city: "Sofia",
+    image: "http://127.0.0.1:5500/StalbataMap/locationImages/editori.png",
+    description: `Ние сме editori, по италиански - с ударение върху О.`,
+    worktime: "Неделя-Понеделник:<br>9:00ч.–2:00ч.<br>Вторник-Събота:<br>9:00ч.-5:00ч.",
+    website: "https://www.facebook.com/editoribg/?locale=bg_BG",
+    googleMaps: "https://maps.google.com/?q=42.6926829,23.3429267"
+  },
+  {
+    id: 12,
+    name: "Слънчоглед",
+    lat: 42.695438,
+    lng: 23.341800,
+    city: "Sofia",
+    image: "http://127.0.0.1:5500/StalbataMap/locationImages/Sunflower.jpg",
+    description: `Слънчоглед – Арт, хоби и крафт материали ООД е семеен бизнес, който стартира през 1995 г. с производство и търговия на материали за рисуване.
+И до днес това е основната дейност на компанията, предлагаща широк избор от бои, четки, платна, моливи и тънкописци, предназначени както за художници с опит, така и за тези, които тепърва се впускат в света на изкуството.`,
+    worktime: "Понеделник-Неделя:<br>10:00ч.–19:00ч.",
+    website: "https://www.slanchogled.com",
+    googleMaps: "https://maps.google.com/?q=42.695438,23.341800"
+  },
+    {
+    id: 13,
+    name: "Gentoo Specialty Coffee",
+    lat: 42.6902482,
+    lng: 23.3186523,
+    city: "Sofia",
+    image: "http://127.0.0.1:5500/StalbataMap/locationImages/Gentoo Specialty Coffee.jpg",
+    description: "Gentoo Specialty Coffee and Doughnuts is a cozy coffee shop specializing in high-quality espresso drinks, hand-brewed coffees, and freshly made artisanal doughnuts. We proudly serve a unique selection of hot and iced matcha and hojicha drinks - including customer favorites like cold matcha strawberry and mango lattes.",
+    worktime: "Вторник-Петък:<br>8:00ч.–17:30ч.<br>Събота-Неделя:<br>9:00ч.–18:00ч.",
+    website: "https://www.instagram.com/gentoocoffeeshop/?hl=bg",
+    googleMaps: "https://maps.google.com/?q=42.6902482,23.3186523"
+  },
+    {
+    id: 14,
+    name: "Дюкян Меломан",
+    lat: 42.693793,
+    lng: 23.329807,
+    city: "Sofia",
+    image: "http://127.0.0.1:5500/StalbataMap/locationImages/meloman.png",
+    description: `Дюкян Меломан е най-старият музикален магазин в София, от 1994 г. В Дюкян Меломан може да намерите внимателно подбрани най-добрите заглавия и издания на грамофонни плочи (LP) и компакт-дискове (CD)
+близо десет хиляди налични заглавия, нови и втора употреба.`,
+    worktime: "Понеделник-Петък:<br>10:00ч.–20:00ч.<br>Събота:<br>10:00ч.–19:00ч.",
+    website: "https://meloman-bg.com",
+    googleMaps: "https://maps.google.com/?q=42.693793,23.329807"
+  },
+    {
+    id: 15,
+    name: "Културен център G8",
+    lat:42.692168, 
+    lng:23.3151274,
+    city: "Sofia",
+    image: "http://127.0.0.1:5500/StalbataMap/locationImages/CultureCentre.jpg",
+    description: `Мисията на центъра е да популяризира филмовата култура чрез селекцията и показа на качествена и разнообразна световна кинопродукция.`,
+    worktime: '<a href="https://g8cinema.com/programa2/" target="_blank">Програма</a>`',
+    website: "https://g8cinema.com",
+    googleMaps: "https://maps.google.com/?q=42.692168,23.3151274"
+  },
 
+      {
+    id: 16,
+    name: "Магазин 9",
+    lat:42.693800, 
+    lng:23.313864,
+    city: "Sofia",
+    image: "http://127.0.0.1:5500/StalbataMap/locationImages/devet.jpg",
+    description: `Your local stop for coffee, tap beer, cocktails & daily goodies. Say hi, grab a drink & smile a little :)`,
+    worktime: 'Понеделник-Петък:<br>8:30ч.–19:30ч.<br>Събота:<br>9:30ч.–20:30ч.',
+    website: "https://www.facebook.com/p/%D0%9C%D0%B0%D0%B3%D0%B0%D0%B7%D0%B8%D0%BD-9-61578362693264/",
+    googleMaps: "https://maps.google.com/?q=42.6937046,23.3134757"
+  },
 
-
-    ];
-
-    // ----- DEBUG: additional test location near Sofia centre (easy to test "find nearest") -----
-    locations.push({
-        image: "", name:"📍 Тестова културна точка (debug)", lat:42.698, lng:23.325, city:"Sofia",
-        description:"Използвай за тест на nearest button. Намира се близо до халите.",
-        worktime:"винаги отворено за тестове", website:"#", googleMaps:"https://maps.google.com/?q=42.698,23.325"
-    });
+      {
+    id: 17,
+    name: "Каркасон",
+    lat:42.6916974, 
+    lng:23.3189154, 
+    city: "Sofia",
+    image: "http://127.0.0.1:5500/StalbataMap/locationImages/Karkason.jpg",
+    description: `Празнуваме любовта към виното и споделените моменти. ❤️ Всеки ден.`,
+    worktime: 'Вторник-Петък:<br>17:00ч.-23:00ч.<br>Събота-Неделя:<br>13:00ч.-23:00ч.',
+       website: 'https://www.facebook.com/krksn/?locale=bg_BG',
+    googleMaps: "https://maps.google.com/?q=42.6916974,23.3189154"
+  },
+    {
+    id: 18,
+    name: "mátzalo",
+    lat:42.6906927, 
+    lng:23.3207526, 
+    city: "Sofia",
+    image: "http://127.0.0.1:5500/StalbataMap/locationImages/matzalo1.jpg",
+    description: `mátzalo e твоето студио, в което можеш да нарисуваш различни керамични съдове в дизайн, който ти харесва. имаме голямо разнообразие на “сурови” керамични продукти (съдове, чаши, чинии, свещници и други), както и керамични фигурки за деца. и е лесно! можеш да разчиташ на нас да ти предоставим всички необходими съставки, за да сътвориш твое собствено mátzalo – бои, четки и т.н.`,
+    worktime: 'Сряда-Понеделник:<br>11:00ч.-20:00ч.',
+       website: 'https://matzalo.com',
+    googleMaps: "https://maps.google.com/?q=42.6906927,23.3207526"
+  },
+      {
+    id: 19,
+    name: "mátzalo",
+    lat:42.682853, 
+    lng:23.3347001, 
+    city: "Sofia",
+    image: "http://127.0.0.1:5500/StalbataMap/locationImages/matzalo2.jpg",
+    description: `mátzalo e твоето студио, в което можеш да нарисуваш различни керамични съдове в дизайн, който ти харесва. имаме голямо разнообразие на “сурови” керамични продукти (съдове, чаши, чинии, свещници и други), както и керамични фигурки за деца. и е лесно! можеш да разчиташ на нас да ти предоставим всички необходими съставки, за да сътвориш твое собствено mátzalo – бои, четки и т.н.`,
+    worktime: 'Сряда-Понеделник:<br>11:00ч.-20:00ч.',
+       website: 'https://matzalo.com',
+    googleMaps: "https://maps.google.com/?q=42.682853,23.3347001"
+  },
+    {
+    id: 20,
+    name: "Wine & Music",
+    lat:42.689436, 
+    lng:23.311867, 
+    city: "Sofia",
+    image: "http://127.0.0.1:5500/StalbataMap/locationImages/Wine&Music.jpg",
+    description: `Прекрасно място за вашия празник, да се видите с приятели, да изпиете чаша хубаво вино 🍷 и се насладете на любими песни изпълнени на живо.
+Който пее, зло не мисли :)
+Наздраве!!! :)`,
+    worktime: 'Четвъртък-Събота:<br>19:00ч.-23:30ч.',
+    website: 'https://www.facebook.com/p/%D0%92%D0%B8%D0%BD%D0%BE-%D0%B8-%D0%9C%D1%83%D0%B7%D0%B8%D0%BA%D0%B0-100085050616692/',
+    googleMaps: "https://maps.google.com/?q=42.689436,23.311867"
+  },
+    {
+    id: 21,
+    name: "Зимникъ",
+    lat:42.684898, 
+    lng:23.316813, 
+    city: "Sofia",
+    image: "http://127.0.0.1:5500/StalbataMap/locationImages/zimnik.jpg",
+    description: `Discover the finest Bulgarian wines, craft beers, and handmade foods, crafted with care and tradition. Enjoy them with us at the bar or take them home for a taste of authentic Bulgarian heritage. Experience true craftsmanship, both dine-in or takeaway!`,
+    worktime: 'Понеделник-Петък:<br>15:30ч.-22:00ч.<br>Събота-Неделя:<br>14:00ч.-22:00ч.',
+       website: 'https://www.facebook.com/Zimnika',
+    googleMaps: "https://maps.google.com/?q=42.684898,23.316813"
+  },
+    {
+    id: 22,
+    name: "Листопадна Арт Галерия",
+    lat:42.6922026, 
+    lng:23.324555, 
+    city: "Sofia",
+    image: "http://127.0.0.1:5500/StalbataMap/locationImages/Art Bazar.jpg",
+    description: `Най-сигурното нещо в живота е промяната. Застоят и скуката са противопоказни и по принцип, а там, където има творчество и търсене, те изобщо не виреят.`,
+    worktime: 'Четвъртък:<br>19:00ч.-20:30ч.',
+    website: 'https://listopadna.com',
+    googleMaps: "https://maps.google.com/?q=42.6922026,23.324555"
+  },
+    {
+    id: 23,
+    name: "Martines Coffee Roastery",
+    lat:42.694471, 
+    lng:23.321785, 
+    city: "Sofia",
+    image:"http://127.0.0.1:5500/StalbataMap/locationImages/martinez.jfif",
+    description: `Добре дошли в Martines, домът на изключителното кафе, създаден през 2005 г. от нашия основател Владимир Малканов. Наречен в чест на неговите дъщери, Мартина и Анес, нашата семейна пекарна израства от дълбоко вкоренена страст към кафето. В Martines сме посветени на предлагането на разнообразна гама от прясно изпечени кафеени зърна, като всяка партида е щателно изработена, за да достави богатите и завладяващи вкусове, които определят нашата марка.`,
+    worktime: 'Понеделник-Петък:<br>9:00ч.-18:00ч.<br>Събота-Неделя:<br>10:00ч.-18:00ч.',
+    website: 'https://martines.coffee/za-nas',
+    googleMaps: "https://maps.google.com/?q=42.694471,23.321785"
+  },
+      {
+    id: 24,
+    name: "Културен център - Централни хали",
+    lat:42.699982, 
+    lng:23.322253, 
+    city: "Sofia",
+    image:"http://127.0.0.1:5500/StalbataMap/locationImages/hali.jpg",
+    description: `Централните хали в сърцето на София са пресечна точка на минало, настояще и бъдеще. Тази уникална сграда е изградена върху пластове история. Тя е паметник на културата от национално значение и един от символите на София.`,
+    worktime: 'Понеделник-Неделя:<br>7:00ч.-22:00ч.',
+    website: 'https://sofia-hali.bg/',
+    googleMaps: "https://maps.google.com/?q=42.699982,23.322253"
+  },
+      {
+    id: 25,
+    name: "Галерия HERITAGE",
+    lat:42.699512, 
+    lng:23.329534, 
+    city: "Sofia",
+    image:"http://127.0.0.1:5500/StalbataMap/locationImages/HERITAGE.jpg",
+    description: `🎨The new art center in the heart of Sofia, where painting and music beat in one rhythm! Here you will find exhibitions of innovative authors, boutique concerts by Tanya Di and a permanent exhibition of paintings by Blagovest Zerliev and Silvana Papadami!`,
+    worktime: 'Понеделник-Петък:<br>11:00ч.-19:00ч.',
+    website: 'https://www.facebook.com/galleryheritage?mibextid=ZbWKwL',
+    googleMaps: "https://maps.google.com/?q=42.699512,23.329534"
+  },
+      {
+    id: 26,
+    name: "Vineria Wine Bar&Shop",
+    lat:42.693563, 
+    lng:23.319240, 
+    city: "Sofia",
+    image:"http://127.0.0.1:5500/StalbataMap/locationImages/Vineria.jpg",
+    description: `Combining the taste of wine and the magic of shared moments.`,
+    worktime: 'Понеделник-Четвъртък:<br>14:00ч.-22:30ч.<br>Петък-Събота:<br>14:00-23:00ч.',
+    website: 'https://www.instagram.com/vineria.wine/',
+    googleMaps: "https://maps.google.com/?q=42.693563,23.319240"
+  },
+      {
+    id: 27,
+    name: "Kolichka Bar",
+    lat:42.695421, 
+    lng:23.339931, 
+    city: "Sofia",
+    image:"http://127.0.0.1:5500/StalbataMap/locationImages/Kolichka Bar.jpg",
+    description: `Ние не просто приготвяме кафе, а създаваме настроение у всеки наш клиент! Тук ще Ви посрещнем вежливи, усмихнати и ще Ви направят любимата кафе напитка с безкомпромисен професионализъм. Капучиното, ще го предложим с 8 вида различни млека, стиймнати до съвършенство в идеалната температура и консистенция за моментална консумация.`,
+    worktime: 'Понеделник-Неделя:<br>7:00ч.-18:00ч.',
+    website: 'https://kolichkabar.com/',
+    googleMaps: "https://maps.google.com/?q=42.695421,23.339931"
+  },
+      {
+    id: 28,
+    name: "Топлоцентрала",
+    lat:42.679768, 
+    lng:23.315192, 
+    city: "Sofia",
+    image:"http://127.0.0.1:5500/StalbataMap/locationImages/toplo.jpg",
+    description: `Основна мисия на Топлоцентрала е да предоставя възможности за различни съвременни форми на образование и международно взаимодействие. Единият от начините за това е въвличането на всеки гостуващ чуждестранен изпълнител в работен творчески процес с български артисти под формата на мастер класове, уъркшопи, съвместно разработване и поставяне на произведение и др.`,
+    worktime: 'Вторник-Неделя:<br>16:00ч.-20:00ч.',
+    website: 'https://toplocentrala.bg/',
+    googleMaps: "https://maps.google.com/?q=42.679768,23.315192"
+  },
+      {
+    id: 29,
+    name: "Punto art bazaar",
+    lat:42.690376, 
+    lng:23.329087, 
+    city: "Sofia",
+    image:"http://127.0.0.1:5500/StalbataMap/locationImages/Punto art bazaar.jpg",
+    description: `В самото сърце на София, на малка, но недотам тиха улица...`,
+    worktime: 'Понеделник-Събота:<br>11:00ч.-19:30ч.<br>Неделя:<br>12:00ч.-18:00ч.',
+    website: 'https://www.facebook.com/p/Punto-art-bazaar-100064740514834/?locale=bg_BG',
+    googleMaps: "https://maps.google.com/?q=42.690376,23.329087"
+  },
+   {
+    id: 30,
+    name: "Cake Lab",
+    lat:42.693428, 
+    lng:23.319477, 
+    city: "Sofia",
+    image:"http://127.0.0.1:5500/StalbataMap/locationImages/Cake Lab.jpg",
+    description: `Cake Lab is a small pastry shop in the heart of Sofia city centre`,
+    worktime: 'Понеделник-Петък:<br>8:00ч.-19:00ч.<br>Събота:<br>9:00ч.-19:00ч.',
+    website: 'https://cakelab-bg.com/',
+    googleMaps: "https://maps.google.com/?q=42.693428,23.319477"
+  },
+   {
+    id: 31,
+    name: "Народно читалище “Михаил Гелев - 1926",
+    lat:42.731924, 
+    lng:23.476709, 
+    city: "Sofia",
+    image:"http://127.0.0.1:5500/StalbataMap/locationImages/MihailGelev.jfif",
+    description: `Мария Влайкова, заедно със своя съпруг Тодор Влайков, оставя след себе си не само литературно и обществено дело, но и значимо дарение с трайна културна стойност. Двамата завещават дома си в София с идеята той да служи за просветни и културни цели.
+Тяхното желание е мястото да бъде средище на духовност, знание и обществен живот – пространство, в което книгата, образованието и културата да продължат да обединяват хората.
+Днес това дарение се свързва с читалищната и културна дейност, която продължава мисията им – да служат на обществото чрез просвета и култура.`,
+    worktime: '',
+    website: 'https://www.facebook.com/p/%D0%9D%D0%B0%D1%80%D0%BE%D0%B4%D0%BD%D0%BE-%D1%87%D0%B8%D1%82%D0%B0%D0%BB%D0%B8%D1%89%D0%B5-%D0%9C%D0%B8%D1%85%D0%B0%D0%B8%D0%BB-%D0%93%D0%B5%D0%BB%D0%B5%D0%B2-1926-%D0%BA%D0%B2%D0%A7%D0%B5%D0%BB%D0%BE%D0%BF%D0%B5%D1%87%D0%B5%D0%BD%D0%B5-100069131623517/',
+    googleMaps: "https://maps.google.com/?q=42.731924,23.476709"
+  },
+   {
+    id: 32,
+    name: "Народно Читалище “Алеко Константинов",
+    lat:42.6940241, 
+    lng:23.347464, 
+    city: "Sofia",
+    image:"http://127.0.0.1:5500/StalbataMap/locationImages/Aleko.jpg",
+    description: `Народно читалище Алеко Константинов – 1897 се създава само месеци след като спира да тупти сърцето на талантливия български писател, сатирик и общественик – демократ.
+През този един век съществуване, чрез активното дело на десетки родолюбиви българи от софия и квартал Подуене, създадено като махленско, а от 1915 година преименувано в народно, читалището с името на Алеко изгражда свои традиции в библиотечната, художествено – творческата, музикалната и езиково – образователната дейност.`,
+    worktime: 'Понеделник-Четвъртък:<br>9:30ч.-17:30ч.<br>Петък:<br>8:30ч.-17:30ч.',
+    website: 'https://akonstantinov.org/',
+    googleMaps: "https://maps.google.com/?q=42.6940241,23.347464"
+  },
+   {
+    id: 33,
+    name: "Междууниверситетски център за развитие на кариерата на УНСС",
+    lat:42.651630, 
+    lng:23.349055, 
+    city: "Sofia",
+    image:"http://127.0.0.1:5500/StalbataMap/locationImages/mrck.jpg",
+    description: ``,
+    worktime: 'Понеделник-Петък:<br>8:00ч.-21:00ч.',
+    website: 'https://www.unwe.bg/bg/structure/render/34',
+    googleMaps: "https://maps.google.com/?q=42.651630,23.349055"
+  },
+   {
+    id: 34,
+    name: "Читалище Мечталище",
+    lat:42.670829, 
+    lng:23.323758, 
+    city: "Sofia",
+    image:"http://127.0.0.1:5500/StalbataMap/locationImages/mechta.jpg",
+    description: `Визията за нашето „Мечталище“ е да осъвремени текущата представа за читалище и да надгради културно-просветителската дейност като я модернизира и предложи дигитални услуги и дейности, релевантни за младите хора и жителите на район Лозенец и София в 21-ви век.`,
+    worktime: 'Понеделник-Неделя:<br>10:00ч.-20:00ч.',
+    website: 'https://mechtalishte.com/',
+    googleMaps: "https://maps.google.com/?q=442.670829,23.323758"
+  },
+   {
+    id: 35,
+    name: "Бар Железарията",
+    lat:42.149450, 
+    lng:24.748461, 
+    city: "Plovdiv",
+    image:"http://127.0.0.1:5500/StalbataMap/locationImages/steel.jfif",
+    description: `🍸Shaken by passion, stirred by grace
+🧭A curated selection of premium spirits from Armenia to Jamaica`,
+    worktime: 'Понеделник-Неделя:<br>10:00ч.-2:00ч.',
+    website: 'https://kapanabar.com/',
+    googleMaps: "https://maps.google.com/?q=42.690376,23.329087"
+  },
+   {
+    id: 36,
+    name: "Народна библиотека \"Иван Вазов\"",
+    lat:42.139360, 
+    lng:24.745809, 
+    city: "Plovdiv",
+    image:"http://127.0.0.1:5500/StalbataMap/locationImages/VankoVasov.jpg",
+    description: `Народната библиотека „Иван Вазов“ в Пловдив изпълнява функциите на второ национално книгохранилище. Библиотеката има голям принос в опазването на българското културно-историческо наследство. Тя е най-голямата публична библиотека в България. Наред с Националната и единствена сред другите библиотеки в страната, тя съхранява и опазва за поколенията пълен Архив на българската книга.`,
+    worktime: 'Понеделник-Петък:<br>8:00ч.-17:45ч.',
+    website: 'https://libplovdiv.com',
+    googleMaps: "https://maps.google.com/?q=42.139360,24.745809"
+  },
+     {
+    id: 37,
+    name: "Arsenal of Art Gallery",
+    lat:42.149772, 
+    lng:24.747511, 
+    city: "Plovdiv",
+    image:"http://127.0.0.1:5500/StalbataMap/locationImages/arsenal.jpg",
+    description: `Арт клуб, галерия , музика на живо всяка сряда , Арт кафе.`,
+    worktime: 'Понеделник-Неделя:<br>11:00ч.-3:00ч.',
+    website: 'https://www.facebook.com/p/Arsenal-of-Art-100063465643334/?locale=bg_BG',
+    googleMaps: "https://maps.google.com/?q=42.149772,24.747511"
+  },
+     {
+    id: 38,
+    name: "OP34 Studio",
+    lat:42.144307, 
+    lng:24.750618, 
+    city: "Plovdiv",
+    image:"http://127.0.0.1:5500/StalbataMap/locationImages/op.jfif",
+    description: `Books, Mags, Analog Films, Vinyls, Trift, LOOP & more`,
+    worktime: 'Четвъртък:<br>13:00ч.-19:00ч.<br>Петък:<br>18:00-20:00<br>Събота-Неделя:<br>11:00ч.-19:00ч.<br>Понеделник:<br>11:00ч.-17:00ч.',
+    website: 'https://www.op34.studio',
+    googleMaps: "https://maps.google.com/?q=42.144307,24.750618"
+  },
+     {
+    id: 39,
+    name: "Samurai Specialty Coffee Shop",
+    lat:43.083892, 
+    lng:25.639396, 
+    city: "Veliko Tarnovo",
+    image:"http://127.0.0.1:5500/StalbataMap/locationImages/samurai.jpg",
+    description: `We roast coffee, not eggs.`,
+    worktime: 'Понеделник-Неделя:<br>7:30ч.-18:30ч.',
+    website: 'https://www.instagram.com/samurai.specialty.coffeeshop/',
+    googleMaps: "https://maps.google.com/?q=43.083892,25.639396"
+  },
+     {
+    id: 40,
+    name: "Творческа къща “ТЪРСАЧ”",
+    lat:43.084990, 
+    lng:25.639076, 
+    city: "Veliko Tarnovo",
+    image:"http://127.0.0.1:5500/StalbataMap/locationImages/Tursach.png",
+    description: `Творческа школа ✍🏼🎵🎹
+Cподелено пространство 💻⌨️🎧
+Място за събития 🎺🥂🎤`,
+    worktime: 'Понеделник-Неделя:<br>10:30ч.-22:30ч.',
+    website: 'https://www.facebook.com/profile.php?id=61556192919537',
+    googleMaps: "https://maps.google.com/?q=43.084990,25.639076"
+  },
+     {
+    id: 41,
+    name: "Книжарница в Куфар",
+    lat:42.423140, 
+    lng:25.624249, 
+    city: "Stara Zagora",
+    image:"http://127.0.0.1:5500/StalbataMap/locationImages/suitcase.jpg",
+    description: `Книжарница в Куфар е пътуващ дом на книги, музика и срещи!`,
+    worktime: '',
+    website: 'https://www.facebook.com/bookstoreinasuitcase',
+    googleMaps: "https://maps.google.com/?q=42.423140,25.624249"
+  },
+     {
+    id: 42,
+    name: "Регионална библиотека \"Захарий Княжески\"",
+    lat:42.427698, 
+    lng:25.627528, 
+    city: "Stara Zagora",
+    image:"http://127.0.0.1:5500/StalbataMap/locationImages/knqjesk.jpg",
+    description: ``,
+    worktime: 'Понеделник-Петък:<br>8:30ч.-18:30ч.<br>Събота:<br>8:30-14:30',
+    website: 'https://www.libsz.org/',
+    googleMaps: "https://maps.google.com/?q=42.427698,25.627528"
+  },
+       {
+    id: 43,
+    name: "Библиотека Родина Стара Загора",
+    lat:42.427698, 
+    lng:25.627528, 
+    city: "Stara Zagora",
+    image:"http://127.0.0.1:5500/StalbataMap/locationImages/knqjesk.jpg",
+    description: ``,
+    worktime: 'Понеделник-Петък:<br>8:30ч.-18:30ч.<br>Събота:<br>8:30-14:30',
+    website: 'https://www.libsz.org/',
+    googleMaps: "https://maps.google.com/?q=42.427698,25.627528"
+  },
+       {
+    id: 44,
+    name: "Куклен театър Стара Загора",
+    lat:42.427698, 
+    lng:25.627528, 
+    city: "Stara Zagora",
+    image:"http://127.0.0.1:5500/StalbataMap/locationImages/knqjesk.jpg",
+    description: ``,
+    worktime: 'Понеделник-Петък:<br>8:30ч.-18:30ч.<br>Събота:<br>8:30-14:30',
+    website: 'https://www.libsz.org/',
+    googleMaps: "https://maps.google.com/?q=42.427698,25.627528"
+  },
+       {
+    id: 45,
+    name: "Къщата на Архитекта",
+    lat:42.427698, 
+    lng:25.627528, 
+    city: "Stara Zagora",
+    image:"http://127.0.0.1:5500/StalbataMap/locationImages/knqjesk.jpg",
+    description: ``,
+    worktime: 'Понеделник-Петък:<br>8:30ч.-18:30ч.<br>Събота:<br>8:30-14:30',
+    website: 'https://www.libsz.org/',
+    googleMaps: "https://maps.google.com/?q=42.427698,25.627528"
+  },
+         {
+    id: 45,
+    name: "Relive - Thrift shop",
+    lat:42.427698, 
+    lng:25.627528, 
+    city: "Stara Zagora",
+    image:"http://127.0.0.1:5500/StalbataMap/locationImages/knqjesk.jpg",
+    description: ``,
+    worktime: 'Понеделник-Петък:<br>8:30ч.-18:30ч.<br>Събота:<br>8:30-14:30',
+    website: 'https://www.libsz.org/',
+    googleMaps: "https://maps.google.com/?q=42.427698,25.627528"
+  },       {
+    id: 45,
+    name: "Колобри на бирата",
+    lat:42.427698, 
+    lng:25.627528, 
+    city: "Stara Zagora",
+    image:"http://127.0.0.1:5500/StalbataMap/locationImages/knqjesk.jpg",
+    description: ``,
+    worktime: 'Понеделник-Петък:<br>8:30ч.-18:30ч.<br>Събота:<br>8:30-14:30',
+    website: 'https://www.libsz.org/',
+    googleMaps: "https://maps.google.com/?q=42.427698,25.627528"
+  },       {
+    id: 45,
+    name: "Пицария Амо",
+    lat:42.427698, 
+    lng:25.627528, 
+    city: "Stara Zagora",
+    image:"http://127.0.0.1:5500/StalbataMap/locationImages/knqjesk.jpg",
+    description: ``,
+    worktime: 'Понеделник-Петък:<br>8:30ч.-18:30ч.<br>Събота:<br>8:30-14:30',
+    website: 'https://www.libsz.org/',
+    googleMaps: "https://maps.google.com/?q=42.427698,25.627528"
+  },
+];
 
     const map = L.map('map').setView([42.7339, 25.4858], 7);
     document.getElementById("map").classList.add("map-ready");
@@ -280,6 +864,18 @@ html, body {
             window.open(googleLink, '_blank');
         };
     }
+    function getFacebookIconLink(url) {
+        return `
+            <a href="${url}" target="_blank" class="fb-link">
+                <svg viewBox="0 0 24 24" class="fb-icon">
+                    <path d="M22 12a10 10 0 1 0-11.5 9.9v-7h-2.3v-2.9h2.3V9.8
+                    c0-2.3 1.4-3.6 3.5-3.6 1 0 2 .2 2 .2v2.2h-1.1
+                    c-1.1 0-1.5.7-1.5 1.4v1.7h2.6l-.4 2.9h-2.2v7
+                    A10 10 0 0 0 22 12z"/>
+                </svg>
+            </a>
+        `;
+    }
 
     locations.forEach(loc => {
         let popupContent = `<strong>${loc.name}</strong>`;
@@ -289,10 +885,24 @@ html, body {
         } else {
             popupContent += `<br><div style="width:100%; text-align:center; padding:4px; background:#f0f2f3; border-radius:8px; cursor:pointer;" class="location-image" data-googlemap="${loc.googleMaps}" title="Щракни за Google Maps">📍 отвори в Google Maps</div>`;
         }
-
+if(loc.worktime && loc.worktime.length>0){
         popupContent += `<div class="popup-work">🕒 ${loc.worktime}</div>`;
-        popupContent += `<div class="popup-web">🌐 <a href="${loc.website}" target="_blank">${loc.website.replace(/^https?:\/\//,'')}</a></div>`;
-        popupContent += `<p>${loc.description}</p>`;
+    }
+if (loc.website && loc.website.length > 0) {
+
+    if (loc.website.includes("facebook.com")) {
+        popupContent += `<div class="popup-web">${getFacebookIconLink(loc.website)}</div>`;
+    } else {
+        popupContent += `
+            <div class="popup-web">
+                🌐 <a href="${loc.website}" target="_blank">
+                    ${loc.website.replace(/^https?:\/\//,'')}
+                </a>
+            </div>
+        `;
+    }
+
+}        popupContent += `<p>${loc.description}</p>`;
 
         const marker = L.marker([loc.lat, loc.lng]);
         marker.locationData = loc; 
