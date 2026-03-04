@@ -231,6 +231,35 @@ html, body {
     transform: translateX(-50%) scale(0.95);
     background: #1A1F22;
 }
+.ig-link {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    background: #fdf2f8;
+    transition: all 0.25s ease;
+    text-decoration: none;
+}
+
+.ig-icon {
+    width: 18px;
+    height: 18px;
+    fill: #E1306C;
+    transition: transform 0.25s ease;
+}
+
+.ig-link:hover {
+    background: #E1306C;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(225,48,108,0.3);
+}
+
+.ig-link:hover .ig-icon {
+    fill: white;
+    transform: scale(1.1);
+}
 </style>
 </head>
 
@@ -724,7 +753,7 @@ const locations = [
     lat:43.083892, 
     lng:25.639396, 
     city: "Veliko Tarnovo",
-    image:"http://127.0.0.1:5500/StalbataMap/locationImages/samurai.jpg",
+    image:"http://127.0.0.1:5500/StalbataMap/locationImages/samurai.jpeg",
     description: `We roast coffee, not eggs.`,
     worktime: 'Понеделник-Неделя:<br>7:30ч.-18:30ч.',
     website: 'https://www.instagram.com/samurai.specialty.coffeeshop/',
@@ -762,81 +791,278 @@ Cподелено пространство 💻⌨️🎧
     lat:42.427698, 
     lng:25.627528, 
     city: "Stara Zagora",
-    image:"http://127.0.0.1:5500/StalbataMap/locationImages/knqjesk.jpg",
-    description: ``,
+    image:"http://127.0.0.1:5500/StalbataMap/locationImages/knqjesk.webp",
+    description: `За хората със слабост към библеотерапията.`,
     worktime: 'Понеделник-Петък:<br>8:30ч.-18:30ч.<br>Събота:<br>8:30-14:30',
     website: 'https://www.libsz.org/',
     googleMaps: "https://maps.google.com/?q=42.427698,25.627528"
   },
        {
     id: 43,
-    name: "Библиотека Родина Стара Загора",
-    lat:42.427698, 
-    lng:25.627528, 
+    name: "Библиотека Родина",
+    lat:42.423986, 
+    lng:25.628194, 
     city: "Stara Zagora",
-    image:"http://127.0.0.1:5500/StalbataMap/locationImages/knqjesk.jpg",
-    description: ``,
-    worktime: 'Понеделник-Петък:<br>8:30ч.-18:30ч.<br>Събота:<br>8:30-14:30',
-    website: 'https://www.libsz.org/',
-    googleMaps: "https://maps.google.com/?q=42.427698,25.627528"
+    image:"http://127.0.0.1:5500/StalbataMap/locationImages/rodina.jpg",
+    description: `Убежище на любопитството, дом на знанието.`,
+    worktime: 'Понеделник-Петък:<br>8:30ч.-18:30ч.',
+    website: 'https://www.rodina-bg.org/',
+    googleMaps: "https://maps.google.com/?q=42.423986,25.628194"
   },
        {
     id: 44,
     name: "Куклен театър Стара Загора",
-    lat:42.427698, 
-    lng:25.627528, 
+    lat:42.422311, 
+    lng:25.624416, 
     city: "Stara Zagora",
-    image:"http://127.0.0.1:5500/StalbataMap/locationImages/knqjesk.jpg",
-    description: ``,
-    worktime: 'Понеделник-Петък:<br>8:30ч.-18:30ч.<br>Събота:<br>8:30-14:30',
-    website: 'https://www.libsz.org/',
-    googleMaps: "https://maps.google.com/?q=42.427698,25.627528"
+    image:"http://127.0.0.1:5500/StalbataMap/locationImages/kuklenstarazagora.jpg",
+    description: `Царство на смеха и забавлението. В гардероба на театъра има закачалка за стреса Ви, ползвайте я.`,
+    worktime: 'Понеделник-Петък:<br>9:00ч.-12:00ч.<br>13:00ч.-18:00ч.<br>Неделя:<br>9:30-12:00',
+    website: 'https://en.pierrot-bg.com/',
+    googleMaps: "https://maps.google.com/?q=42.422311,25.624416"
   },
        {
     id: 45,
     name: "Къщата на Архитекта",
-    lat:42.427698, 
-    lng:25.627528, 
+    lat:42.423126, 
+    lng:25.624225, 
     city: "Stara Zagora",
-    image:"http://127.0.0.1:5500/StalbataMap/locationImages/knqjesk.jpg",
-    description: ``,
-    worktime: 'Понеделник-Петък:<br>8:30ч.-18:30ч.<br>Събота:<br>8:30-14:30',
-    website: 'https://www.libsz.org/',
-    googleMaps: "https://maps.google.com/?q=42.427698,25.627528"
+    image:"http://127.0.0.1:5500/StalbataMap/locationImages/architecht.jpg",
+    description: `Независима креативна среда за изкуство в архитектурен паметник - личния дом на арх. Димов, 1923г.`,
+    worktime: '',
+    website: 'https://www.facebook.com/profile.php?id=100064800273808#',
+    googleMaps: "https://maps.google.com/?q=42.423126,25.624225"
   },
          {
-    id: 45,
+    id: 46,
     name: "Relive - Thrift shop",
-    lat:42.427698, 
-    lng:25.627528, 
+    lat:42.428390, 
+    lng:25.643658, 
     city: "Stara Zagora",
-    image:"http://127.0.0.1:5500/StalbataMap/locationImages/knqjesk.jpg",
-    description: ``,
-    worktime: 'Понеделник-Петък:<br>8:30ч.-18:30ч.<br>Събота:<br>8:30-14:30',
-    website: 'https://www.libsz.org/',
-    googleMaps: "https://maps.google.com/?q=42.427698,25.627528"
+    image:"http://127.0.0.1:5500/StalbataMap/locationImages/relive.jpg",
+    description: `Charity or second-hand shop`,
+    worktime: 'Понеделник-Петък:<br>8:30ч.-18:30ч.<br>Събота:<br>10:00-14:00',
+    website: 'https://www.facebook.com/p/Relive-Thrift-shop-61566477757408/',
+    googleMaps: "https://maps.google.com/?q=42.428390,25.643658"
   },       {
-    id: 45,
-    name: "Колобри на бирата",
-    lat:42.427698, 
-    lng:25.627528, 
+    id: 47,
+    name: "Beer Kolobars Bar",
+    lat:42.419541, 
+    lng:25.627532, 
     city: "Stara Zagora",
-    image:"http://127.0.0.1:5500/StalbataMap/locationImages/knqjesk.jpg",
-    description: ``,
-    worktime: 'Понеделник-Петък:<br>8:30ч.-18:30ч.<br>Събота:<br>8:30-14:30',
-    website: 'https://www.libsz.org/',
-    googleMaps: "https://maps.google.com/?q=42.427698,25.627528"
+    image:"http://127.0.0.1:5500/StalbataMap/locationImages/kolobri.jpg",
+    description: `„Колобри на бирата“ – алтернативният бар на Стара Загора.`,
+    worktime: 'Понеделник-Неделя:<br>15:30ч.-23:00ч.',
+    website: 'https://beerkolobars.com/',
+    googleMaps: "https://maps.google.com/?q=42.419541,25.627532"
   },       {
-    id: 45,
+    id: 48,
     name: "Пицария Амо",
-    lat:42.427698, 
-    lng:25.627528, 
+    lat:42.426033, 
+    lng:25.629038, 
     city: "Stara Zagora",
-    image:"http://127.0.0.1:5500/StalbataMap/locationImages/knqjesk.jpg",
+    image:"http://127.0.0.1:5500/StalbataMap/locationImages/amo.jpg",
+    description: `Italian fast food and aperitivo`,
+    worktime: 'Понеделник-Събота:<br>9:00ч.-20:00ч.',
+    website: 'https://www.facebook.com/pizza.amo.stz',
+    googleMaps: "https://maps.google.com/?q=42.426033,25.629038"
+  },
+  {
+    id: 49,
+    name: "Школа \"Дедал\"",
+    lat:43.207658, 
+    lng:27.912183, 
+    city: "Varna",
+    image:"http://127.0.0.1:5500/StalbataMap/locationImages/pizadedal.jpg",
+    description: `Школа по изкуствата. Място посветено на развитието и любознанието.`,
+    worktime: '',
+    website: 'https://dedalmedia.org',
+    googleMaps: "https://maps.google.com/?q=43.207658,27.912183"
+  },
+  {
+    id: 50,
+    name: "Социалната Чайна",
+    lat:43.202001, 
+    lng:27.915118, 
+    city: "Varna",
+    image:"http://127.0.0.1:5500/StalbataMap/locationImages/soctea.jpg",
+    description: `Чай с кауза за смели момичета!
+В Социалната чайна вярваме, че всеки има право да води честен и достоен живот и липсата на родителска грижа и условия за израстване не бива да лишават когото и да било от това право.`,
+    worktime: 'Понеделник-Петък:<br>8:30ч.-17:30ч.<br>Събота-Неделя:<br>9:00ч.-18:00ч.',
+    website: 'https://thesocialteahouse.bg',
+    googleMaps: "https://maps.google.com/?q=43.202001,27.915118"
+  },
+  {
+    id: 51,
+    name: "Campus 90",
+    lat:43.218055, 
+    lng:27.909609, 
+    city: "Varna",
+    image:"http://127.0.0.1:5500/StalbataMap/locationImages/campus.jfif",
+    description: `CONTEMPORARY SPACE FOR LIVING | WORKING | DREAMING
+🛎️ Hotel | 💻 Co-working | 🗝️ Long-term stays
+Your ultimate modern destination in Varna 🛸`,
+    worktime: '',
+    website: 'https://campus90.com',
+    googleMaps: "https://maps.google.com/?q=43.218055,27.909609"
+  },
+  {
+    id: 52,
+    name: "Бар Суматоха",
+    lat:43.203275, 
+    lng:27.911523, 
+    city: "Varna",
+    image:"http://127.0.0.1:5500/StalbataMap/locationImages/sumatoha.jpg",
+    description: `На Лаф с Крафт.`,
+    worktime: 'Понеделник-Неделя:<br>9:00ч.-24:00ч.',
+    website: 'https://www.facebook.com/pizza.amo.stz',
+    googleMaps: "https://maps.google.com/?q=43.203275,27.911523"
+  },
+  {
+    id: 53,
+    name: "Регионална библиотека \"Пейо Яворов\"",
+    lat:42.497930, 
+    lng:27.477024, 
+    city: "Burgas",
+    image:"http://127.0.0.1:5500/StalbataMap/locationImages/peyoJavorov.jfif",
+    description: `Библиотеката е място за вдъхновение, отдих и споделено приятелство!`,
+    worktime: 'Понеделник-Неделя:<br>8:00ч.-22:30ч.',
+    website: 'https://burgaslib.bg',
+    googleMaps: "https://maps.google.com/?q=42.497930,27.477024"
+  },
+  {
+    id: 54,
+    name: "PiBooks",
+    lat:43.204872, 
+    lng:27.912495, 
+    city: "Varna",
+    image:"http://127.0.0.1:5500/StalbataMap/locationImages/pi.jpg",
+    description: `Пи Букс е място, което събира в себе си книжарница, кафе-библиотека, учебна стая и галерия.
+Дейностите са насочени основно към деца и юноши и имат само една цел - да заразяват с четене, знания и добро настроение. Изцяло частна инициатива, която се осъществява с помощта на екип от неуморни хора.`,
+    worktime: 'Понеделник-Петък:<br>9:30ч.-18:30ч.<br>Събота:<br>10:00ч.-18:30ч.',
+    website: 'https://pibooksbg.com/',
+    googleMaps: "https://maps.google.com/?q=43.204872,27.912495"
+  },
+  {
+    id: 55,
+    name: "Американски университет",
+    lat:42.011932, 
+    lng:23.094073, 
+    city: "Blagoevgrad",
+    image:"http://127.0.0.1:5500/StalbataMap/locationImages/american uni.jpg",
+    description: `AUBG is a premier independent university in Central and Eastern Europe offering outstanding American-style education recognized in both the U.S. and the EU.`,
+    worktime: 'Понеделник-Събота:<br>8:00ч.-17:00ч.',
+    website: 'https://www.aubg.edu',
+    googleMaps: "https://maps.google.com/?q=42.011932,23.094073"
+  },
+  {
+    id: 56,
+    name: "ПГТ \"Пейо Яворов\"",
+    lat:43.566754, 
+    lng:27.831131, 
+    city: "Dobrich",
+    image:"http://127.0.0.1:5500/StalbataMap/locationImages/pgt_iavorovlogo.png",
+    description: `Мисията ни е да осигуряваме качествено и достъпно средно и професионално образование, като успешно съчетаваме националните традиции с европейското измерение за развитие на ндивидуалността и творческите заложби на всеки ученик като способен на житейска и професионална реализация член на гражданското общество. Наши ученици работят не само в България, но се реализират успешно и на европейския пазар на труда.`,
+    worktime: 'Понеделник-Петък:<br>8:00ч.-19:30ч.',
+    website: 'https://www.pgtdobrich.org',
+    googleMaps: "https://maps.google.com/?q=43.566754,27.831115"
+  },
+  {
+    id: 57,
+    name:"Народно читалище \"Йордан Йовков\"",
+    lat:43.568141, 
+    lng:27.831129, 
+    city: "Dobrich",
+    image:"http://127.0.0.1:5500/StalbataMap/locationImages/yocoyovkov.jpg",
+    description: `Спокоен пристан за любителите на изкуството и книгите.`,
+    worktime: 'Понеделник-Петък:<br>9:00ч.-21:00ч.<br>Събота:<br>9:00ч.-13:30ч.',
+    website: 'https://yovkov1870.eu/',
+    googleMaps: "https://maps.google.com/?q=43.568141,27.831129"
+  },
+  {
+    id: 58,
+    name: "Художествена галерия - Казанлък",
+    lat:42.621162, 
+    lng:25.394636, 
+    city: "Kazanlak",
+    image:"http://127.0.0.1:5500/StalbataMap/locationImages/kazanlakgaleria.jpg",
+    description: `Художествената галерия в Казанлък се стреми да бъде пример за отворена и прозрачна културна институция. Галерията е известна със своята ангажираност към насърчаването и представянето на съвременното българско изкуство, както и социализирането на своя богат художествен фонд.`,
+    worktime: 'Понеделник-Събота:<br>10:00ч.-18:00ч.',
+    website: 'https://www.artgallerykazanlak.com',
+    googleMaps: "https://maps.google.com/?q=42.621162,25.394636"
+  },
+  {
+    id: 59,
+    name: "Регионална библиотека \„Проф. Боян Пенев\"",
+    lat:43.526686, 
+    lng:26.526775, 
+    city: "Razgrad",
+    image:"http://127.0.0.1:5500/StalbataMap/locationImages/boqnpenev.jpeg",
+    description: `От 1992 година Библиотеката носи името на видния българин – професор Боян Пенев.`,
+    worktime: 'Понеделник-Петък:<br>9:00ч.-18:00ч.',
+    website: 'https://www.librz.org/',
+    googleMaps: "https://maps.google.com/?q=43.526686,26.526775"
+  },
+  {
+    id: 60,
+    name: "Регионална библиотека \"Стилиян Чилингиров\"",
+    lat:43.269628, 
+    lng:26.927430, 
+    city: "Shumen",
+    image:"http://127.0.0.1:5500/StalbataMap/locationImages/stoyanchilingirov.jpg",
+    description: `„Българин върху хляб и книга не стъпва!”
+Из писмо на Илия Р. Блъсков до Юрий Венелин (1869 г.)`,
+    worktime: 'Понеделник-Петък:<br>8:00ч.-18:30ч.<br>Събота:<br>9:00ч.-17:00ч.',
+    website: 'https://libshumen.org/',
+    googleMaps: "https://maps.google.com/?q=43.269628,26.927430"
+  },
+  {
+    id: 61,
+    name: "Пашкул - Арт магазин & Галерия",
+    lat:43.987796, 
+    lng:22.875782, 
+    city: "Vidin",
+    image:"http://127.0.0.1:5500/StalbataMap/locationImages/pashkul.png",
+    description: `🔸Убежище за изкуство във Видин🔸`,
+    worktime: 'Понеделник-Петък:<br>10:30ч.-18:00ч.<br>Събота:<br>10:00ч.-14:00ч.',
+    website: 'https://www.facebook.com/61573467670567/about/',
+    googleMaps: "https://maps.google.com/?q=43.987796,22.875782"
+  },
+  {
+    id: 62,
+    name: "Исторически музей Бяла",
+    lat:42.876671, 
+    lng:27.884545, 
+    city: "Byala",
+    image:"http://127.0.0.1:5500/StalbataMap/locationImages/byalamus.jpg",
+    description: `Мисията на Общинския културен институт /музей/ – гр. Бяла е опазване и съхраняване на материалните и нематериални културно-исторически паметници, традиции и ритуали на територията на община Бяла за сегашните и бъдещи поколения.`,
+    worktime: 'Понеделник-Петък:<br>9:00ч.-17:00ч.',
+    website: 'https://museumbyala.com',
+    googleMaps: "https://maps.google.com/?q=42.876671,27.884545"
+  },
+  {
+    id: 63,
+    name: "Общинска библиотека \"Елин Пелин\"",
+    lat:42.670617, 
+    lng:23.599689, 
+    city: "Elin Pelin",
+    image:"http://127.0.0.1:5500/StalbataMap/locationImages/elinpelinlib.jpg",
+    description: `Общинска библиотека в гр. Елин Пелин`,
+    worktime: 'Понеделник-Събота:<br>8:00ч.-17:00ч.',
+    website: 'https://www.facebook.com/p/%D0%9E%D0%B1%D1%89%D0%B8%D0%BD%D1%81%D0%BA%D0%B0-%D0%B1%D0%B8%D0%B1%D0%BB%D0%B8%D0%BE%D1%82%D0%B5%D0%BA%D0%B0-%D0%B3%D1%80-%D0%95%D0%BB%D0%B8%D0%BD-%D0%9F%D0%B5%D0%BB%D0%B8%D0%BD-100064521079935/?locale=bg_BG',
+    googleMaps: "https://maps.google.com/?q=42.670617,23.599689"
+  },
+  {
+    id: 64,
+    name: "Библиотека към НЧ Арарат",
+    lat:41.929497, 
+    lng:25.553436, 
+    city: "Haskovo",
+    image:"",
     description: ``,
-    worktime: 'Понеделник-Петък:<br>8:30ч.-18:30ч.<br>Събота:<br>8:30-14:30',
-    website: 'https://www.libsz.org/',
-    googleMaps: "https://maps.google.com/?q=42.427698,25.627528"
+    worktime: 'Понеделник-Събота:<br>8:00ч.-17:00ч.',
+    website: 'https://bibliobg.com/community/2048/2180',
+    googleMaps: "https://maps.google.com/?q=41.929497,25.553436"
   },
 ];
 
@@ -863,6 +1089,21 @@ Cподелено пространство 💻⌨️🎧
             e.stopPropagation();
             window.open(googleLink, '_blank');
         };
+    }
+    function getInstagramIconLink(url) {
+    return `
+        <a href="${url}" target="_blank" class="ig-link">
+            <svg viewBox="0 0 24 24" class="ig-icon">
+                <path d="M7 2C4.2 2 2 4.2 2 7v10c0 2.8 2.2 5 5 5h10c2.8 0 5-2.2 
+                5-5V7c0-2.8-2.2-5-5-5H7zm10 2c1.7 0 3 1.3 3 
+                3v10c0 1.7-1.3 3-3 3H7c-1.7 0-3-1.3-3-3V7c0-1.7 
+                1.3-3 3-3h10zm-5 3.5A4.5 4.5 0 1 0 16.5 12 
+                4.5 4.5 0 0 0 12 7.5zm0 7A2.5 2.5 0 1 1 
+                14.5 12 2.5 2.5 0 0 1 12 14.5zm4.8-7.8a1 1 0 1 
+                0 1-1 1 1 0 0 0-1 1z"/>
+            </svg>
+        </a>
+    `;
     }
     function getFacebookIconLink(url) {
         return `
@@ -891,16 +1132,20 @@ if(loc.worktime && loc.worktime.length>0){
 if (loc.website && loc.website.length > 0) {
 
     if (loc.website.includes("facebook.com")) {
-        popupContent += `<div class="popup-web">${getFacebookIconLink(loc.website)}</div>`;
-    } else {
-        popupContent += `
-            <div class="popup-web">
-                🌐 <a href="${loc.website}" target="_blank">
-                    ${loc.website.replace(/^https?:\/\//,'')}
-                </a>
-            </div>
-        `;
+    popupContent += `<div class="popup-web">${getFacebookIconLink(loc.website)}</div>`;
     }
+    else if (loc.website.includes("instagram.com")) {
+    popupContent += `<div class="popup-web">${getInstagramIconLink(loc.website)}</div>`;
+    }
+    else {
+    popupContent += `
+        <div class="popup-web">
+            🌐 <a href="${loc.website}" target="_blank">
+                ${loc.website.replace(/^https?:\/\//,'')}
+            </a>
+        </div>
+    `;
+}
 
 }        popupContent += `<p>${loc.description}</p>`;
 
