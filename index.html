@@ -96,18 +96,15 @@ html, body {
 }
 
 .leaflet-popup-content p {
-    display: -webkit-box;
-    -webkit-line-clamp: 3;
-    -webkit-box-orient: vertical;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    max-height: 4.5em;
     margin: 8px 0 5px;
     color: #353E43 !important;
     line-height: 1.5;
     animation: textFadeIn 0.5s ease-out !important;
     word-break: break-word;
     hyphens: auto;
+    display: block;
+    overflow: visible;
+    max-height: none;
 }
 
 @keyframes popIn {
@@ -226,7 +223,14 @@ html, body {
     .leaflet-popup-content-wrapper { border-width: 4px !important; }
     .leaflet-popup-content { font-size: 14px; margin: 12px !important; }
     .leaflet-popup-content .location-image { max-width: 130px; }
-    .leaflet-popup-content p { -webkit-line-clamp: 2; max-height: 3em;}
+        .leaflet-popup-content p {
+        display: -webkit-box;
+        -webkit-line-clamp: 3;
+        -webkit-box-orient: vertical;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        max-height: 4.5em;
+    }
     .leaflet-popup-content .hint {font-size: 0.8rem !important; margin-top: 2px !important;}
 }
 
@@ -1203,51 +1207,109 @@ if (loc.website && loc.website.length > 0) {
 
     map.addLayer(cluster);
 
-    document.getElementById("findNearest").addEventListener("click", () => {
-    if (!navigator.geolocation) {
-        alert("Geolocation не се поддържа от браузъра.");
-        return;
-    }
-
-    navigator.geolocation.getCurrentPosition(position => {
-        const userLat = position.coords.latitude;
-        const userLng = position.coords.longitude;
-
-        let closestMarker = null;
-        let shortestDistance = Infinity;
-
-        markers.forEach(marker => {
-            const markerLatLng = marker.getLatLng();
-            const distance = map.distance(
-                [userLat, userLng],
-                [markerLatLng.lat, markerLatLng.lng]
-            );
-            if (distance < shortestDistance) {
-                shortestDistance = distance;
-                closestMarker = marker;
-            }
-        });
-
-        if (closestMarker) {
-            // Fix: Check if marker is in a cluster
-            cluster.zoomToShowLayer(closestMarker, () => {
-                // Small delay to ensure cluster expands before opening popup
-                setTimeout(() => {
-                    closestMarker.openPopup();
-                }, 100);
-            });
-        } else {
-            alert("Няма намерени обекти.");
+    // Make sure the button exists and is clickable
+const findButton = document.getElementById("findNearest");
+if (findButton) {
+    console.log("Find button found"); // For debugging
+    
+    findButton.addEventListener("click", (e) => {
+        console.log("Button clicked"); // For debugging
+        
+        if (!navigator.geolocation) {
+            alert("Geolocation не се поддържа от браузъра.");
+            return;
         }
-    }, (error) => {
-        console.error("Geolocation error:", error);
-        alert("Не може да се вземе местоположение. Моля, разрешете достъп до локацията и опитайте отново.");
-    }, {
-        enableHighAccuracy: true,
-        timeout: 5000,
-        maximumAge: 0
+
+        findButton.textContent = "Търсене...";
+        findButton.disabled = true;
+
+        navigator.geolocation.getCurrentPosition(
+            (position) => {
+                console.log("Position obtained:", position); 
+                
+                const userLat = position.coords.latitude;
+                const userLng = position.coords.longitude;
+
+                let closestMarker = null;
+                let shortestDistance = Infinity;
+
+                markers.forEach(marker => {
+                    const markerLatLng = marker.getLatLng();
+                    const distance = map.distance(
+                        [userLat, userLng],
+                        [markerLatLng.lat, markerLatLng.lng]
+                    );
+                    if (distance < shortestDistance) {
+                        shortestDistance = distance;
+                        closestMarker = marker;
+                    }
+                });
+
+                if (closestMarker) {
+                    map.setView(closestMarker.getLatLng(), 15);
+                    
+                    setTimeout(() => {
+                        try {
+                            closestMarker.openPopup();
+                        } catch (e) {
+                            console.error("Error opening popup:", e);
+                            cluster.zoomToShowLayer(closestMarker, () => {
+                                setTimeout(() => {
+                                    closestMarker.openPopup();
+                                }, 200);
+                            });
+                        }
+                    }, 300);
+                } else {
+                    alert("Няма намерени обекти.");
+                }
+                
+                // Reset button
+                findButton.textContent = "Намери ми Стълбата";
+                findButton.disabled = false;
+            },
+            (error) => {
+                console.error("Geolocation error:", error);
+                let errorMessage = "Не може да се вземе местоположение.";
+                
+                switch(error.code) {
+                    case error.PERMISSION_DENIED:
+                        errorMessage = "Разрешението за местоположение е отказано. Моля, разрешете достъп в браузъра си.";
+                        break;
+                    case error.POSITION_UNAVAILABLE:
+                        errorMessage = "Информацията за местоположение е недостъпна.";
+                        break;
+                    case error.TIMEOUT:
+                        errorMessage = "Времето за изчакване на местоположението изтече.";
+                        break;
+                }
+                
+                alert(errorMessage);
+                
+                findButton.textContent = "Намери ми Стълбата";
+                findButton.disabled = false;
+            },
+            {
+                enableHighAccuracy: true,
+                timeout: 10000,
+                maximumAge: 0
+            }
+        );
     });
-});
+} else {
+    console.error("Find button not found in DOM");
+}
+
+const style = document.createElement('style');
+style.textContent = `
+    #findNearest {
+        z-index: 1000 !important;
+        pointer-events: auto !important;
+        opacity: 1 !important;
+        visibility: visible !important;
+    }
+`;
+document.head.appendChild(style);
 
 })();
 </script>
