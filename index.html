@@ -718,7 +718,7 @@ const locations = [
     description: `Визията за нашето „Мечталище“ е да осъвремени текущата представа за читалище и да надгради културно-просветителската дейност като я модернизира и предложи дигитални услуги и дейности, релевантни за младите хора и жителите на район Лозенец и София в 21-ви век.`,
     worktime: 'Понеделник-Неделя:<br>10:00ч.-20:00ч.',
     website: 'https://mechtalishte.com/',
-    googleMaps: "https://maps.google.com/?q=442.670829,23.323758"
+    googleMaps: "https://maps.google.com/?q=42.670829,23.323758"
   },
    {
     id: 35,
@@ -1204,42 +1204,50 @@ if (loc.website && loc.website.length > 0) {
     map.addLayer(cluster);
 
     document.getElementById("findNearest").addEventListener("click", () => {
-        if (!navigator.geolocation) {
-            alert("Geolocation не се поддържа от браузъра.");
-            return;
-        }
+    if (!navigator.geolocation) {
+        alert("Geolocation не се поддържа от браузъра.");
+        return;
+    }
 
-        navigator.geolocation.getCurrentPosition(position => {
-            const userLat = position.coords.latitude;
-            const userLng = position.coords.longitude;
+    navigator.geolocation.getCurrentPosition(position => {
+        const userLat = position.coords.latitude;
+        const userLng = position.coords.longitude;
 
-            let closestMarker = null;
-            let shortestDistance = Infinity;
+        let closestMarker = null;
+        let shortestDistance = Infinity;
 
-            markers.forEach(marker => {
-                const markerLatLng = marker.getLatLng();
-                const distance = map.distance(
-                    [userLat, userLng],
-                    [markerLatLng.lat, markerLatLng.lng]
-                );
-                if (distance < shortestDistance) {
-                    shortestDistance = distance;
-                    closestMarker = marker;
-                }
-            });
-
-            if (closestMarker) {
-                // zoom to marker via cluster, then open popup
-                cluster.zoomToShowLayer(closestMarker, () => {
-                    closestMarker.openPopup();
-                });
-            } else {
-                alert("Няма намерени обекти.");
+        markers.forEach(marker => {
+            const markerLatLng = marker.getLatLng();
+            const distance = map.distance(
+                [userLat, userLng],
+                [markerLatLng.lat, markerLatLng.lng]
+            );
+            if (distance < shortestDistance) {
+                shortestDistance = distance;
+                closestMarker = marker;
             }
-        }, () => {
-            alert("Не може да се вземе местоположение. Проверете разрешенията.");
         });
+
+        if (closestMarker) {
+            // Fix: Check if marker is in a cluster
+            cluster.zoomToShowLayer(closestMarker, () => {
+                // Small delay to ensure cluster expands before opening popup
+                setTimeout(() => {
+                    closestMarker.openPopup();
+                }, 100);
+            });
+        } else {
+            alert("Няма намерени обекти.");
+        }
+    }, (error) => {
+        console.error("Geolocation error:", error);
+        alert("Не може да се вземе местоположение. Моля, разрешете достъп до локацията и опитайте отново.");
+    }, {
+        enableHighAccuracy: true,
+        timeout: 5000,
+        maximumAge: 0
     });
+});
 
 })();
 </script>
